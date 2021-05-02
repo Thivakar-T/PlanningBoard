@@ -188,14 +188,14 @@ class App extends Component {
                       >
                         {allocation.orders.map((order) => {
                           return (
-                            <div
+                            <div style={{height: `${100/allocation.orders.length}%`}}
                               className={`bg-${order.class} height`}
                               onDrop={(e) => {
                                 this.allowDrop(e);
                               }}
                               key={`${factory.factoryId}-${allocation.month}-${order.orderId}`}
                             >
-                              {order.orderId}
+                              
                             </div>
                           );
                         })}
