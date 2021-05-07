@@ -47,3 +47,17 @@ body .no-padding{
   padding-left: 0;
   padding-right: 0;
 }
+.hrfooter{
+  width: 81%;
+  margin-left: 10%;
+}
+.footer {
+  position: fixed;
+  height: 10%;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  /* background-color: rgb(231, 224, 224); */
+  color: rgb(83, 79, 79);
+  text-align: center;
+}
