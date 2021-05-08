@@ -6,6 +6,7 @@ import MONTHS from "./../data/months";
 
 
 class dashboard extends Component {
+    
     constructor() {
       super();
       this.state = {
@@ -13,10 +14,23 @@ class dashboard extends Component {
         months: MONTHS,
         factories: factories,
         filteredList: orders,
-        filter: ''
+        filter: '',
+        colors: {},
+        palette : [ "7AE7C7", "75BBA7", "6C809A",  "982649", "60B2E5", "53F4FF", "71A2B6", "343E3D", "607466", "AEDCC0", "7BD389", "A5B452", "C8D96F", "C4F7A1", "9BA7C0", "3C1518", "69140E", "A44200", "D58936", "F2F3AE", "795663", "645244" ]
       };
     }
-    // const [orderId, setFilter] = useState('Order Filter');
+  
+   componentWillMount() {
+      window.addEventListener('load', this.assignColors);
+   }
+
+   assignColors = () => {
+     orders.forEach((item,index) => {
+      this.state.colors[item.orderId]=this.state.palette[index];
+     });
+     console.log(this.state.colors);
+   };
+
    setFilter = (value) => {
      if(!value || value === "") {
       this.setState({filteredList: this.state.orders})
@@ -33,6 +47,7 @@ class dashboard extends Component {
     }
    };
 
+  
 
     onDragStart = (ev, orderId) => {
       console.log("dragstart:", orderId);
@@ -116,9 +131,7 @@ class dashboard extends Component {
                         className="col-xs-3 col-sm-3 col-md-3"
                         key={order.orderId}
                       >
-                        <div
-                          className={`card text-white border py-3 px-5 my-col bg-${order.class}`}
-                        >
+                        <div className={`card text-white border py-3 px-5 my-col bg-${this.state.colors[order.orderId]}`}>
                           <h6 className="font-weight-400">
                             {" "}
                             <span className="">Order ID</span> : {order.orderId}
