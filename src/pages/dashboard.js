@@ -1,15 +1,39 @@
 import React, { Component } from "react";
+import { useState } from "react";
 import orders from "./../data/order";
 import factories from "./../data/factories";
+import MONTHS from "./../data/months";
+
 
 class dashboard extends Component {
     constructor() {
       super();
       this.state = {
         orders: orders,
+        months: MONTHS,
         factories: factories,
+        filteredList: orders,
+        filter: ''
       };
     }
+    // const [orderId, setFilter] = useState('Order Filter');
+   setFilter = (value) => {
+     if(!value || value === "") {
+      this.setState({filteredList: this.state.orders})
+     } else {
+      let ordersList = this.state.orders;
+      let filteredList = []
+      ordersList.forEach((item, index) => {
+        if(item.orderId.includes(value)) {
+            filteredList.push(item);
+        }
+      })
+
+      this.setState({filteredList: filteredList})
+    }
+   };
+
+
     onDragStart = (ev, orderId) => {
       console.log("dragstart:", orderId);
       ev.dataTransfer.setData("orderId", orderId);
@@ -71,15 +95,22 @@ class dashboard extends Component {
           <div className="row">
             <h5>
               <u className="text-muted unline">
-                <span className="text-dark"> Orders</span>
-              </u>
+                <span className="text-dark">Orders</span>
+                <input id="filter"
+                  name="filter"
+                  type="text"
+                  onChange={event => this.setFilter(event.target.value)}
+                /> 
+
+               </u> 
             </h5>
           </div>
           <div className="row pt-5">
+
             <div id="demo" className="carousel slide" data-ride="carousel">
               <div className="container carousel-inner no-padding">
                 <div className="carousel-item active">
-                  {this.state.orders.map((order) => {
+                  {this.state.filteredList.map((order) => {
                     return (
                       <div
                         draggable="true"
@@ -111,8 +142,8 @@ class dashboard extends Component {
   
           <div className="pt-5">
             <h5>
-              <u className="text-muted unline">
-                <span className="text-dark"> By Selected Order</span>
+              <u className="text-muted">
+                <span> By Selected Order</span>
               </u>
             </h5>
           </div>
@@ -122,42 +153,14 @@ class dashboard extends Component {
             </div>
             <div className="col-11">
               <div className="row ">
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>Jan</h6>
+              {this.state.months.map((month) => {
+                    return (
+                      <div className="col-1 pt-2 border border-dark">
+                           <h6>{month.month}</h6>
                 </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>Feb</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>March</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>April</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>May</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>June</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>July</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>Aug</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>Sep</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>Oct</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark">
-                  <h6>Nov</h6>
-                </div>
-                <div className="col-1 pt-2 border border-dark test">
-                  <h6>Dec</h6>
-                </div>
+                );
+              })}
+
               </div>
             </div>
           </div>
