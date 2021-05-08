@@ -65,6 +65,7 @@ class dashboard extends Component {
       console.log({ factories: new_factories });
       this.setState({
         orders: filtered_orders,
+        filteredList: filtered_orders
       });
       this.setState({
         factories: new_factories,
