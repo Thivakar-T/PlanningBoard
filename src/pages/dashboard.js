@@ -90,22 +90,21 @@ class dashboard extends Component {
                 />
               </span>
             </div>
-  
             <hr />
           </div>
-          <div className="row">
-            <h5>
-              <u className="text-muted unline">
-                <span className="text-dark">Orders</span>
-                <input id="filter"
+          <div class="main">  
+            <div class="form-group has-search">
+              <span class="fa fa-search form-control-feedback"></span>
+              <input id="filter" 
+                class="form-control"
                   name="filter"
                   type="text"
+                  placeholder="Type here to filter your orders"
                   onChange={event => this.setFilter(event.target.value)}
-                /> 
-
-               </u> 
-            </h5>
+                />             
+            </div>
           </div>
+
           <div className="row pt-5">
 
             <div id="demo" className="carousel slide" data-ride="carousel">
@@ -156,8 +155,8 @@ class dashboard extends Component {
               <div className="row ">
               {this.state.months.map((month) => {
                     return (
-                      <div className="col-1 pt-2 border border-dark">
-                           <h6>{month.month}</h6>
+                      <div className="col-1 pt-1 border">
+                           {month.month}
                 </div>
                 );
               })}

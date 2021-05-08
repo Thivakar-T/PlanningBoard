@@ -16,8 +16,40 @@ code {
 }
 .font-weight-400{
   font-weight: 400;
-  font-size: 11px;
+  font-size: 10px;
 }
+.container {
+  font-size: 14px;
+}
+.text-dark {
+  font-size: 16px;
+}
+.input {
+  font-size: 16px;
+}
+.main {
+  width: 50%;
+  margin: 50px auto;
+}
+
+/* Bootstrap 4 text input with search icon */
+
+.has-search .form-control {
+  padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+  position: absolute;
+  z-index: 2;
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
 .width-row{
   width: 100%;
 }
@@ -28,7 +60,7 @@ code {
   height: 30px;
 }
 .size{
-  font-size: 14px;
+  font-size: 12px;
 }
 .col-md-3{
   display: inline-block;
