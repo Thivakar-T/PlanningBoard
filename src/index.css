@@ -16,22 +16,22 @@ code {
 }
 .font-weight-400{
   font-weight: 400;
-  font-size: 10px;
+  font-size: 14px;
 }
 .container {
   font-size: 14px;
-}
-.text-dark {
-  font-size: 16px;
+  width: 90%
 }
 .input {
   font-size: 16px;
 }
 .main {
-  width: 50%;
+  width: 80%;
   margin: 50px auto;
 }
-
+.h2 {
+  font-size: 14px;
+}
 /* Bootstrap 4 text input with search icon */
 
 .has-search .form-control {
@@ -60,7 +60,7 @@ code {
   height: 30px;
 }
 .size{
-  font-size: 12px;
+  font-size: 14px;
 }
 .col-md-3{
   display: inline-block;

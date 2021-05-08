@@ -76,7 +76,7 @@ class dashboard extends Component {
         <div className="container">
           <div className="py-3 mr-1 row">
             <div className="col-6">
-              <h2>Planning Board</h2>
+              <h3>Planning Board</h3>
             </div>
             <div className="col-5"></div>
             <div className="col-1">
@@ -90,7 +90,6 @@ class dashboard extends Component {
                 />
               </span>
             </div>
-            <hr />
           </div>
           <div class="main">  
             <div class="form-group has-search">
@@ -105,8 +104,7 @@ class dashboard extends Component {
             </div>
           </div>
 
-          <div className="row pt-5">
-
+          <div className="row">
             <div id="demo" className="carousel slide" data-ride="carousel">
               <div className="container carousel-inner no-padding">
                 <div className="carousel-item active">
@@ -143,13 +141,12 @@ class dashboard extends Component {
           <div className="pt-5">
             <h5>
               <u className="text-muted">
-                <span> By Selected Order</span>
               </u>
             </h5>
           </div>
           <div className="row py-2 mx-2 text-center">
-            <div className="col-1 pt-2 border border-dark">
-              <h6>Place</h6>
+            <div className="col-1 pt-1 border">
+              Place
             </div>
             <div className="col-11">
               <div className="row ">
@@ -171,7 +168,7 @@ class dashboard extends Component {
                 key={`${factory.factoryId}`}
               >
                 <div className="col-1 border height pt-1">
-                  <h6>{factory.location}</h6>
+                  {factory.location}
                 </div>
                 <div className="col-11">
                   <div className="row ">
