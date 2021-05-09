@@ -16,14 +16,15 @@ class dashboard extends Component {
         filteredList: orders,
         filter: '',
         colors: {},
-        palette : [ "7AE7C7", "75BBA7", "6C809A",  "982649", "60B2E5", "53F4FF", "71A2B6", "343E3D", "607466", "AEDCC0", "7BD389", "A5B452", "C8D96F", "C4F7A1", "9BA7C0", "3C1518", "69140E", "A44200", "D58936", "F2F3AE", "795663", "645244" ]
+        palette : [ "9BC53D", "7AE7C7", "75BBA7",  "982649", "6C809A", "60B2E5", "53F4FF", "71A2B6", "343E3D", "607466", "AEDCC0", "7BD389", "A5B452", "C8D96F", "C4F7A1", "9BA7C0", "3C1518", "69140E", "A44200", "D58936", "F2F3AE", "795663", "645244" ]
       };
+      this.assignColors();
     }
-  
-   componentWillMount() {
+    /*
+   componentDidMount() {
       window.addEventListener('load', this.assignColors);
    }
-
+   */
    assignColors = () => {
      orders.forEach((item,index) => {
       this.state.colors[item.orderId]=this.state.palette[index];
