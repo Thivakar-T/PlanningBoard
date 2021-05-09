@@ -13,7 +13,7 @@ const orders = [
   },
   {
     orderId: "345",
-    style: "UsPolo",
+    style: "US POLO",
     qty: 30000,
     class: "danger",
   },
@@ -22,6 +22,6 @@ const orders = [
     style: "Viking",
     qty: 20000,
     class: "success",
-  },
+  }
 ];
 export default orders;

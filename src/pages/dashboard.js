@@ -16,7 +16,7 @@ class dashboard extends Component {
         filteredList: orders,
         filter: '',
         colors: {},
-        palette : [ "9BC53D", "7AE7C7", "75BBA7",  "982649", "6C809A", "60B2E5", "53F4FF", "71A2B6", "343E3D", "607466", "AEDCC0", "7BD389", "A5B452", "C8D96F", "C4F7A1", "9BA7C0", "3C1518", "69140E", "A44200", "D58936", "F2F3AE", "795663", "645244" ]
+        palette : [ "5BC0EB","FDE74C","9BC53D","E55934","FA7921","9BC53D", "7AE7C7", "75BBA7",  "982649", "6C809A", "60B2E5", "53F4FF", "71A2B6", "343E3D", "607466", "AEDCC0", "7BD389", "A5B452", "C8D96F", "C4F7A1", "9BA7C0", "3C1518", "69140E", "A44200", "D58936", "F2F3AE", "795663", "645244" ]
       };
       this.assignColors();
     }
@@ -120,8 +120,14 @@ class dashboard extends Component {
             </div>
           </div>
 
+          <div className="align-right">
+            <div>Orders pending allocation : <b>{this.state.filteredList.length}</b></div>
+          </div>
+          <div className="align-right">
+            <div>&nbsp;</div>
+          </div>
           <div className="row">
-            <div id="demo" className="carousel slide" data-ride="carousel">
+            <div id="demo"  >
               <div className="container carousel-inner no-padding">
                 <div className="carousel-item active">
                   {this.state.filteredList.map((order) => {
@@ -201,7 +207,7 @@ class dashboard extends Component {
                           {allocation.orders.map((order) => {
                             return (
                               <div style={{height: `${100/allocation.orders.length}%`}}
-                                className={`bg-${order.class} height`}
+                                className={`bg-${this.state.colors[order.orderId]} height`}
                                 onDrop={(e) => {
                                   this.allowDrop(e);
                                 }}

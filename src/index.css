@@ -163,3 +163,25 @@ body .no-padding{
 .bg-F2F3AE {
 	background-color: #F2F3AE
 }
+
+.bg-5BC0EB {
+background-color: #5BC0EB
+}
+
+.bg-FDE74C {
+ background-color: #FDE74C
+}
+.bg-9BC53D {
+background-color: #9BC53D
+}
+
+.bg-E55934 {
+background-color: #E55934
+}
+
+.bg-FA7921 {
+background-color: #FA7921
+}
+.align-right {
+  display: flex;justify-content: flex-end 
+}
