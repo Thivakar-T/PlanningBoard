@@ -1,27 +1,27 @@
 const orders = [
   {
-    orderId: "123",
-    style: "Jockey",
+    orderId: '123',
+    style: 'Jockey',
     qty: 10000,
-    class: "primary",
+    color: '9BC53D',
   },
   {
-    orderId: "234",
-    style: "Ramraj",
+    orderId: '234',
+    style: 'Ramraj',
     qty: 40000,
-    class: "secondary",
+    color: '7AE7C7',
   },
   {
-    orderId: "345",
-    style: "UsPolo",
+    orderId: '345',
+    style: 'UsPolo',
     qty: 30000,
-    class: "danger",
+    color: '75BBA7',
   },
   {
-    orderId: "456",
-    style: "Viking",
+    orderId: '456',
+    style: 'Viking',
     qty: 20000,
-    class: "success",
+    color: '982649',
   },
-];
-export default orders;
+]
+export default orders
