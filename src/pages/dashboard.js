@@ -177,7 +177,7 @@ class dashboard extends Component {
                             {order.style}
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Qty</span> : {order.qty}
+                            <span className="">PQTY</span> : {order.qty}
                           </h6>
                           <h6 className="font-weight-400">
                             <span className="">SAM</span> : {order.sam}
@@ -197,8 +197,8 @@ class dashboard extends Component {
           </h5>
         </div>
         <div className="row py-2 mx-2 text-center">
-          <div className="col-1 pt-1 border">Place</div>
-          <div className="col-11">
+          <div className="col-2 pt-1 border">Factory</div>
+          <div className="col-10">
             <div className="row ">
               {this.state.months.map((item) => {
                 return (
@@ -216,8 +216,8 @@ class dashboard extends Component {
               className="row py-2 mx-2 text-center"
               key={`${factory.factoryId}`}
             >
-              <div className="col-1 border height pt-1">{factory.location}</div>
-              <div className="col-11">
+              <div className="col-2 border height pt-1">{factory.factoryName}</div>
+              <div className="col-10">
                 <div className="row ">
                   {factory.allocations.map((allocation) => {
                     return (
@@ -288,14 +288,13 @@ class dashboard extends Component {
                 </h5>
               </div>
               <div className="modal-body row">
-                <p>Selected Factory: {this.state.selected_factory}</p>
-                <p>Selected Month: {this.state.selected_month}</p>
+                <p>{this.state.selected_factory}</p>
                 {this.state.selected_orders.map((order) => {
                   return (
                     <div
                       draggable="true"
                       onDragStart={(e) => this.onDragStart(e, order.orderId)}
-                      className="col-xs-3 col-sm-3 col-md-3"
+                      className="col-xs-4 col-sm-4 col-md-4"
                       key={order.orderId}
                     >
                       <div
@@ -332,18 +331,14 @@ class dashboard extends Component {
                             </button>
                           </span>
                         </h6>
-                        <h6 className="font-weight-400">
-                          {' '}
+                        <h6 className="font-weight-300">
                           {order.orderId}
                         </h6>
-                        <h6 className="font-weight-400">
+                        <h6 className="font-weight-300">
                           {order.style}
                         </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">Qty</span> : {order.qty}
-                        </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">SAM</span> : {order.sam}
+                        <h6 className="font-weight-300">
+                          <span className="">QTY</span> : {order.qty} , <span className="">SAM</span> : {order.sam}
                         </h6>
                       </div>
                     </div>
