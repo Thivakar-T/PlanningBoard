@@ -171,13 +171,16 @@ class dashboard extends Component {
                         >
                           <h6 className="font-weight-400">
                             {' '}
-                            <span className="">Order ID</span> : {order.orderId}
+                            {order.orderId}
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Style</span> : {order.style}
+                            {order.style}
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Quantity</span> : {order.qty}
+                            <span className="">Qty</span> : {order.qty}
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">SAM</span> : {order.sam}
                           </h6>
                         </div>
                       </div>
@@ -262,8 +265,8 @@ class dashboard extends Component {
             <hr className="mx-5 " />
           </div>
           <div>
-            <span>copywright </span>
-            <span>@ 2020 Planning Board.</span>
+            <span>Copyright </span>
+            <span>@ 2021 Planning Board</span>
           </div>
         </footer>
         <div
@@ -331,13 +334,16 @@ class dashboard extends Component {
                         </h6>
                         <h6 className="font-weight-400">
                           {' '}
-                          <span className="">Order ID</span> : {order.orderId}
+                          {order.orderId}
                         </h6>
                         <h6 className="font-weight-400">
-                          <span className="">Style</span> : {order.style}
+                          {order.style}
                         </h6>
                         <h6 className="font-weight-400">
-                          <span className="">Quantity</span> : {order.qty}
+                          <span className="">Qty</span> : {order.qty}
+                        </h6>
+                        <h6 className="font-weight-400">
+                          <span className="">SAM</span> : {order.sam}
                         </h6>
                       </div>
                     </div>

@@ -7,18 +7,7 @@ const factories = [
       {
         month: 'Jan',
         orders: [
-          {
-            orderId: 'ABV',
-            style: 'Jockey',
-            qty: 10000,
-            color: '9BA53D',
-          },
-          {
-            orderId: 'GHV',
-            style: 'Ramraj',
-            qty: 40000,
-            color: '7AD7C7',
-          },
+
         ],
       },
       {
@@ -36,18 +25,6 @@ const factories = [
       {
         month: 'May',
         orders: [
-          {
-            orderId: 'YUP',
-            style: 'Jockey',
-            qty: 10000,
-            color: '9BC55D',
-          },
-          {
-            orderId: 'TRY',
-            style: 'Ramraj',
-            qty: 40000,
-            color: '7AE7B6',
-          },
         ],
       },
       {
