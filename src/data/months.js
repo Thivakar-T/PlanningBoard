@@ -1,6 +1,6 @@
 import moment from 'moment'
 
-const MONTHS = () => {
+const months = () => {
   console.log('inside months function')
   const months = []
   const dateStart = moment()
@@ -16,4 +16,4 @@ const MONTHS = () => {
   console.log(months)
   return months
 }
-export default MONTHS()
+export default months()

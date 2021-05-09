@@ -1,33 +1,26 @@
 import React, { Component } from 'react'
-import { useState } from 'react'
 import orders from './../data/order'
 import factories from './../data/factories'
-import MONTHS from './../data/months'
+import months from './../data/months'
 
 class dashboard extends Component {
   constructor() {
     super()
     this.state = {
       orders: orders,
-      months: MONTHS,
+      months: months,
       factories: factories,
-      filteredList: orders,
       filter: '',
+      selected_orders: [],
+      selected_factory: '',
+      selected_month: '',
     }
   }
   setFilter = (value) => {
-    if (!value || value === '') {
-      this.setState({ filteredList: this.state.orders })
+    if (!value || !value.trim()) {
+      this.setState({ filter: '' })
     } else {
-      let ordersList = this.state.orders
-      let filteredList = []
-      ordersList.forEach((item, index) => {
-        if (item.orderId.includes(value)) {
-          filteredList.push(item)
-        }
-      })
-
-      this.setState({ filteredList: filteredList })
+      this.setState({ filter: value })
     }
   }
 
@@ -42,6 +35,50 @@ class dashboard extends Component {
     ev.preventDefault()
   }
 
+  onClick = (ev, factoryId, month) => {
+    console.log(factoryId)
+    console.log(month)
+    this.setState({
+      selected_factory: factoryId,
+      selected_month: month,
+    })
+    let selected_factory = factories.filter(
+      (factory) => factory.factoryId === factoryId
+    )
+    console.log(selected_factory)
+    let selected_allocation = selected_factory[0].allocations.filter(
+      (allocation) => allocation.month === month
+    )
+    this.setState({
+      selected_orders: selected_allocation[0].orders,
+    })
+  }
+  onUnallocate = (ev, factoryId, month, orderId) => {
+    console.log(factoryId)
+    console.log(month)
+    const factories = this.state.factories
+    this.setState({
+      selected_factory: factoryId,
+      selected_month: month,
+    })
+    let selected_factory = factories.filter(
+      (factory) => factory.factoryId === factoryId
+    )
+    console.log(selected_factory)
+    let selected_allocation = selected_factory[0].allocations.filter(
+      (allocation) => allocation.month === month
+    )
+    let order = selected_allocation[0].orders.filter(
+      (order) => order.orderId === orderId
+    )
+    selected_allocation[0].orders = selected_allocation[0].orders.filter(
+      (order) => order.orderId !== orderId
+    )
+    this.setState({
+      factories: factories,
+      orders: this.state.orders.concat(order),
+    })
+  }
   onDrop = (ev, factoryId, month) => {
     let orderId = ev.dataTransfer.getData('orderId')
     let selected_order = this.state.orders.filter((order) => {
@@ -96,6 +133,7 @@ class dashboard extends Component {
               className="form-control"
               name="filter"
               type="text"
+              value={this.state.filter}
               placeholder="Type here to filter your orders"
               onChange={(event) => this.setFilter(event.target.value)}
             />
@@ -106,32 +144,38 @@ class dashboard extends Component {
           <div id="demo" className="carousel slide" data-ride="carousel">
             <div className="container carousel-inner no-padding">
               <div className="carousel-item active">
-                {this.state.filteredList.map((order) => {
-                  return (
-                    <div
-                      draggable="true"
-                      onDragStart={(e) => this.onDragStart(e, order.orderId)}
-                      className="col-xs-3 col-sm-3 col-md-3"
-                      key={order.orderId}
-                    >
-                      <div
-                        className={`card text-white border py-3 px-5 my-col`}
-                        style={{ backgroundColor: `#${order.color}` }}
-                      >
-                        <h6 className="font-weight-400">
-                          {' '}
-                          <span className="">Order ID</span> : {order.orderId}
-                        </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">Style</span> : {order.style}
-                        </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">Quantity</span> : {order.qty}
-                        </h6>
-                      </div>
-                    </div>
+                {this.state.orders
+                  .filter(
+                    (item) =>
+                      item.orderId.includes(this.state.filter) ||
+                      !this.state.filter
                   )
-                })}
+                  .map((order) => {
+                    return (
+                      <div
+                        draggable="true"
+                        onDragStart={(e) => this.onDragStart(e, order.orderId)}
+                        className="col-xs-3 col-sm-3 col-md-3"
+                        key={order.orderId}
+                      >
+                        <div
+                          className={`card text-white border py-3 px-5 my-col`}
+                          style={{ backgroundColor: `#${order.color}` }}
+                        >
+                          <h6 className="font-weight-400">
+                            {' '}
+                            <span className="">Order ID</span> : {order.orderId}
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">Style</span> : {order.style}
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">Quantity</span> : {order.qty}
+                          </h6>
+                        </div>
+                      </div>
+                    )
+                  })}
               </div>
             </div>
           </div>
@@ -172,7 +216,12 @@ class dashboard extends Component {
                         key={`${factory.factoryId}-${allocation.month}`}
                         id={`${factory.factoryId}-${allocation.month}`}
                         className="col-1 border height text-white"
+                        data-toggle="modal"
+                        data-target="#selectedMonth"
                         onDragOver={(e) => this.onDragOver(e)}
+                        onClick={(e) => {
+                          this.onClick(e, factory.factoryId, allocation.month)
+                        }}
                         onDrop={(e) => {
                           this.onDrop(e, factory.factoryId, allocation.month)
                         }}
@@ -210,6 +259,97 @@ class dashboard extends Component {
             <span>@ 2020 Planning Board.</span>
           </div>
         </footer>
+        <div
+          className="modal fade "
+          id="selectedMonth"
+          tabIndex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div
+            className="modal-dialog modal-dialog-centered modal-fullscreen-xl-down modal-xl"
+            role="document"
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="exampleModalLabel">
+                  Planning Board
+                </h5>
+              </div>
+              <div className="modal-body row">
+                <p>Selected Factory: {this.state.selected_factory}</p>
+                <p>Selected Month: {this.state.selected_month}</p>
+                {this.state.selected_orders.map((order) => {
+                  return (
+                    <div
+                      draggable="true"
+                      onDragStart={(e) => this.onDragStart(e, order.orderId)}
+                      className="col-xs-3 col-sm-3 col-md-3"
+                      key={order.orderId}
+                    >
+                      <div
+                        className={`text-white border py-3 px-5 my-col height `}
+                        style={{
+                          backgroundColor: `#${order.color}`,
+                          height: '120px',
+                          position: 'relative',
+                        }}
+                      >
+                        <h6 className="font-weight-400">
+                          <span
+                            style={{
+                              position: 'absolute',
+                              right: '6px',
+                              top: '10px',
+                            }}
+                            data-dismiss="modal"
+                            className=""
+                            onClick={(e) => {
+                              this.onUnallocate(
+                                e,
+                                this.state.selected_factory,
+                                this.state.selected_month,
+                                order.orderId
+                              )
+                            }}
+                          >
+                            <button
+                              type="button"
+                              className="close"
+                              aria-label="Close"
+                            >
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </span>
+                        </h6>
+                        <h6 className="font-weight-400">
+                          {' '}
+                          <span className="">Order ID</span> : {order.orderId}
+                        </h6>
+                        <h6 className="font-weight-400">
+                          <span className="">Style</span> : {order.style}
+                        </h6>
+                        <h6 className="font-weight-400">
+                          <span className="">Quantity</span> : {order.qty}
+                        </h6>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     )
   }
