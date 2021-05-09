@@ -74,9 +74,13 @@ class dashboard extends Component {
     selected_allocation[0].orders = selected_allocation[0].orders.filter(
       (order) => order.orderId !== orderId
     )
+    const selected_orders = this.state.selected_orders.filter((order) => {
+      return order.orderId !== orderId
+    })
     this.setState({
       factories: factories,
       orders: this.state.orders.concat(order),
+      selected_orders: selected_orders,
     })
   }
   onDrop = (ev, factoryId, month) => {
@@ -112,21 +116,24 @@ class dashboard extends Component {
           <div className="col-6">
             <h3>Planning Board</h3>
           </div>
-          <div className="col-5"></div>
-          <div className="col-1">
+          <div className="col-4"></div>
+          <div className="col-2" style={{ textAlign: 'right' }}>
             <span>
+              <span>Welcome admin !</span>
               <img
                 _ngcontent-weu-c112=""
                 src="https://icon-library.net/images/profiles-icon/profiles-icon-0.jpg"
                 width="43%"
                 alt="Header Avatar"
+                style={{ width: '12%' }}
                 className="rounded-circle header-profile-user"
               />
             </span>
           </div>
         </div>
+        <hr />
         <div className="main">
-          <div className="form-group has-search">
+          <div className="form-group has-search" style={{ width: '50%' }}>
             <span className="fa fa-search form-control-feedback"></span>
             <input
               id="filter"
@@ -255,7 +262,7 @@ class dashboard extends Component {
             <hr className="mx-5 " />
           </div>
           <div>
-            <a href="https://coreui.io">Planning </a>
+            <span>copywright </span>
             <span>@ 2020 Planning Board.</span>
           </div>
         </footer>
@@ -303,7 +310,6 @@ class dashboard extends Component {
                               right: '6px',
                               top: '10px',
                             }}
-                            data-dismiss="modal"
                             className=""
                             onClick={(e) => {
                               this.onUnallocate(

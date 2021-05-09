@@ -1,169 +1,195 @@
 const factories = [
   {
-    factoryId: "F001",
-    factoryName: "Master",
-    location: "Chennai",
+    factoryId: 'F001',
+    factoryName: 'Master',
+    location: 'Chennai',
     allocations: [
       {
-        month: "Jan",
+        month: 'Jan',
+        orders: [
+          {
+            orderId: 'ABV',
+            style: 'Jockey',
+            qty: 10000,
+            color: '9BA53D',
+          },
+          {
+            orderId: 'GHV',
+            style: 'Ramraj',
+            qty: 40000,
+            color: '7AD7C7',
+          },
+        ],
+      },
+      {
+        month: 'Feb',
         orders: [],
       },
       {
-        month: "Feb",
+        month: 'Mar',
         orders: [],
       },
       {
-        month: "Mar",
+        month: 'Apr',
         orders: [],
       },
       {
-        month: "Apr",
+        month: 'May',
+        orders: [
+          {
+            orderId: 'YUP',
+            style: 'Jockey',
+            qty: 10000,
+            color: '9BC55D',
+          },
+          {
+            orderId: 'TRY',
+            style: 'Ramraj',
+            qty: 40000,
+            color: '7AE7B6',
+          },
+        ],
+      },
+      {
+        month: 'Jun',
         orders: [],
       },
       {
-        month: "May",
+        month: 'Jul',
         orders: [],
       },
       {
-        month: "Jun",
+        month: 'Aug',
         orders: [],
       },
       {
-        month: "Jul",
+        month: 'Sep',
         orders: [],
       },
       {
-        month: "Aug",
+        month: 'Oct',
         orders: [],
       },
       {
-        month: "Sep",
+        month: 'Nov',
         orders: [],
       },
       {
-        month: "Oct",
-        orders: [],
-      },
-      {
-        month: "Nov",
-        orders: [],
-      },
-      {
-        month: "Dec",
+        month: 'Dec',
         orders: [],
       },
     ],
   },
   {
-    factoryId: "F002",
-    factoryName: "Gilli",
-    location: "Bangalore",
+    factoryId: 'F002',
+    factoryName: 'Gilli',
+    location: 'Bangalore',
     allocations: [
       {
-        month: "Jan",
+        month: 'Jan',
         orders: [],
       },
       {
-        month: "Feb",
+        month: 'Feb',
         orders: [],
       },
       {
-        month: "Mar",
+        month: 'Mar',
         orders: [],
       },
       {
-        month: "Apr",
+        month: 'Apr',
         orders: [],
       },
       {
-        month: "May",
+        month: 'May',
         orders: [],
       },
       {
-        month: "Jun",
+        month: 'Jun',
         orders: [],
       },
       {
-        month: "Jul",
+        month: 'Jul',
         orders: [],
       },
       {
-        month: "Aug",
+        month: 'Aug',
         orders: [],
       },
       {
-        month: "Sep",
+        month: 'Sep',
         orders: [],
       },
       {
-        month: "Oct",
+        month: 'Oct',
         orders: [],
       },
       {
-        month: "Nov",
+        month: 'Nov',
         orders: [],
       },
       {
-        month: "Dec",
+        month: 'Dec',
         orders: [],
       },
     ],
   },
   {
-    factoryId: "F003",
-    factoryName: "Sarkar",
-    location: "Mumbai",
+    factoryId: 'F003',
+    factoryName: 'Sarkar',
+    location: 'Mumbai',
     allocations: [
       {
-        month: "Jan",
+        month: 'Jan',
         orders: [],
       },
       {
-        month: "Feb",
+        month: 'Feb',
         orders: [],
       },
       {
-        month: "Mar",
+        month: 'Mar',
         orders: [],
       },
       {
-        month: "Apr",
+        month: 'Apr',
         orders: [],
       },
       {
-        month: "May",
+        month: 'May',
         orders: [],
       },
       {
-        month: "Jun",
+        month: 'Jun',
         orders: [],
       },
       {
-        month: "Jul",
+        month: 'Jul',
         orders: [],
       },
       {
-        month: "Aug",
+        month: 'Aug',
         orders: [],
       },
       {
-        month: "Sep",
+        month: 'Sep',
         orders: [],
       },
       {
-        month: "Oct",
+        month: 'Oct',
         orders: [],
       },
       {
-        month: "Nov",
+        month: 'Nov',
         orders: [],
       },
       {
-        month: "Dec",
+        month: 'Dec',
         orders: [],
       },
     ],
   },
-];
+]
 
-export default factories;
+export default factories
