@@ -237,11 +237,18 @@ class dashboard extends Component {
                         }}
                       >
                         {allocation.orders.map((order) => {
+                          var totalSAM=0;
+                          var cellColor='';
+                          for(var i=0; i< allocation.orders.length; i++) {
+                            totalSAM+=allocation.orders[i].sam;
+                          }
+                          cellColor=(totalSAM==100000)?'94fbab':(totalSAM>100000)?'bf4342':'0496ff';
+
                           return (
                             <div
                               style={{
                                 height: `${100 / allocation.orders.length}%`,
-                                backgroundColor: `#${order.color}`,
+                                backgroundColor: `#${cellColor}`,
                               }}
                               className={`height`}
                               onDrop={(e) => {

@@ -25,7 +25,7 @@ const orders = [
     style: 'SLEEP SUIT',
     qty: 6683,
     color: '982649',
-    sam: 38654
+    sam: 100000
   },
 ]
 export default orders
