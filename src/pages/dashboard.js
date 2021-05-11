@@ -2,6 +2,11 @@ import React, { Component } from 'react'
 import orders from './../data/order'
 import factories from './../data/factories'
 import months from './../data/months'
+import utilization from './../data/utilization'
+import _ from 'lodash'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import './dashboard.css'
 
 class dashboard extends Component {
   constructor() {
@@ -14,6 +19,7 @@ class dashboard extends Component {
       selected_orders: [],
       selected_factory: '',
       selected_month: '',
+      selected_sam: '',
     }
   }
   setFilter = (value) => {
@@ -21,6 +27,20 @@ class dashboard extends Component {
       this.setState({ filter: '' })
     } else {
       this.setState({ filter: value })
+    }
+  }
+
+  get_utlization_level(allocation) {
+    const allocated_sam = _.sumBy(allocation.orders, 'sam')
+    if (allocated_sam === 0) {
+      return 'white'
+    }
+    if (allocated_sam > allocation.sam) {
+      return utilization.high.color
+    } else if (allocated_sam < allocation.sam) {
+      return utilization.low.color
+    } else {
+      return utilization.equal.color
     }
   }
 
@@ -35,12 +55,13 @@ class dashboard extends Component {
     ev.preventDefault()
   }
 
-  onClick = (ev, factoryId, month) => {
+  onClick = (ev, factoryId, month, sam) => {
     console.log(factoryId)
     console.log(month)
     this.setState({
       selected_factory: factoryId,
       selected_month: month,
+      selected_sam: sam,
     })
     let selected_factory = factories.filter(
       (factory) => factory.factoryId === factoryId
@@ -145,11 +166,16 @@ class dashboard extends Component {
               onChange={(event) => this.setFilter(event.target.value)}
             />
           </div>
+          <div className="align-right">
+            <div>
+              Orders pending allocation : <b>{this.state.orders.length}</b>
+            </div>
+          </div>
         </div>
 
         <div className="row">
           <div id="demo" className="carousel slide" data-ride="carousel">
-            <div className="container carousel-inner no-padding">
+            <div className="container carousel-inner no-padding order_container">
               <div className="carousel-item active">
                 {this.state.orders
                   .filter(
@@ -171,13 +197,20 @@ class dashboard extends Component {
                         >
                           <h6 className="font-weight-400">
                             {' '}
-                            <span className="">Order ID</span> : {order.orderId}
+                            <span className="">ID</span> :{' '}
+                            <span className="order_label">{order.orderId}</span>
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Style</span> : {order.style}
+                            <span className="">Style</span> :{' '}
+                            <span className="order_label">{order.style}</span>
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Quantity</span> : {order.qty}
+                            <span className="">Quantity</span> :{' '}
+                            <span className="order_label">{order.qty}</span>
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">SAM</span> :{' '}
+                            <span className="order_label">{order.sam}</span>
                           </h6>
                         </div>
                       </div>
@@ -219,21 +252,34 @@ class dashboard extends Component {
                   {factory.allocations.map((allocation) => {
                     return (
                       <div
-                        style={{ padding: 0 }}
+                        style={{ padding: 0, cursor: 'pointer' }}
                         key={`${factory.factoryId}-${allocation.month}`}
                         id={`${factory.factoryId}-${allocation.month}`}
                         className="col-1 border height text-white"
                         data-toggle="modal"
                         data-target="#selectedMonth"
                         onDragOver={(e) => this.onDragOver(e)}
-                        onClick={(e) => {
-                          this.onClick(e, factory.factoryId, allocation.month)
-                        }}
                         onDrop={(e) => {
                           this.onDrop(e, factory.factoryId, allocation.month)
                         }}
                       >
-                        {allocation.orders.map((order) => {
+                        <div
+                          style={{
+                            height: '100%',
+                            backgroundColor: `${this.get_utlization_level(
+                              allocation
+                            )}`,
+                          }}
+                          onClick={(e) => {
+                            this.onClick(
+                              e,
+                              factory.factoryId,
+                              allocation.month,
+                              allocation.sam
+                            )
+                          }}
+                        ></div>
+                        {/* {allocation.orders.map((order) => {
                           return (
                             <div
                               style={{
@@ -247,7 +293,7 @@ class dashboard extends Component {
                               key={`${factory.factoryId}-${allocation.month}-${order.orderId}`}
                             ></div>
                           )
-                        })}
+                        })} */}
                       </div>
                     )
                   })}
@@ -280,13 +326,29 @@ class dashboard extends Component {
           >
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title" id="exampleModalLabel">
-                  Planning Board
-                </h5>
+                <div className="col-12">
+                  <div className="col-6">
+                    <h5 className="modal-title" id="exampleModalLabel">
+                      Planning Board
+                    </h5>
+                  </div>
+                  <div className="col-6"></div>
+                </div>
               </div>
               <div className="modal-body row">
-                <p>Selected Factory: {this.state.selected_factory}</p>
-                <p>Selected Month: {this.state.selected_month}</p>
+                <p>
+                  <span>Selected Factory: {this.state.selected_factory}</span>
+                  <span style={{ marginLeft: '25px' }}>
+                    Selected Month: {this.state.selected_month}
+                  </span>
+                  <span style={{ marginLeft: '25px' }}>
+                    Approved SAM: {this.state.selected_sam}
+                  </span>
+                  <span style={{ marginLeft: '25px' }}>
+                    Allocated SAM: {_.sumBy(this.state.selected_orders, 'sam')}
+                  </span>
+                </p>
+
                 {this.state.selected_orders.map((order) => {
                   return (
                     <div
@@ -296,7 +358,7 @@ class dashboard extends Component {
                       key={order.orderId}
                     >
                       <div
-                        className={`text-white border py-3 px-5 my-col height `}
+                        className={`text-white border py-1 px-3 my-col height `}
                         style={{
                           backgroundColor: `#${order.color}`,
                           height: '120px',
@@ -309,6 +371,7 @@ class dashboard extends Component {
                               position: 'absolute',
                               right: '6px',
                               top: '10px',
+                              cursor: 'pointer',
                             }}
                             className=""
                             onClick={(e) => {
@@ -320,24 +383,29 @@ class dashboard extends Component {
                               )
                             }}
                           >
-                            <button
-                              type="button"
+                            <FontAwesomeIcon
                               className="close"
-                              aria-label="Close"
-                            >
-                              <span aria-hidden="true">&times;</span>
-                            </button>
+                              color="black"
+                              icon={faTrashAlt}
+                            />
                           </span>
                         </h6>
                         <h6 className="font-weight-400">
                           {' '}
-                          <span className="">Order ID</span> : {order.orderId}
+                          <span className="">ID</span> :{' '}
+                          <span className="order_label">{order.orderId}</span>
                         </h6>
                         <h6 className="font-weight-400">
-                          <span className="">Style</span> : {order.style}
+                          <span className="">Style</span> :{' '}
+                          <span className="order_label">{order.style}</span>
                         </h6>
                         <h6 className="font-weight-400">
-                          <span className="">Quantity</span> : {order.qty}
+                          <span className="">Quantity</span> :{' '}
+                          <span className="order_label">{order.qty}</span>
+                        </h6>
+                        <h6 className="font-weight-400">
+                          <span className="">SAM</span> :{' '}
+                          <span className="order_label">{order.sam}</span>
                         </h6>
                       </div>
                     </div>
