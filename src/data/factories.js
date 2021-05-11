@@ -1,8 +1,8 @@
 const factories = [
   {
     factoryId: 'F001',
-    factoryName: 'Master',
-    location: 'Chennai',
+    factoryName: 'ACE APPARELS',
+    location: 'TIRUPPUR',
     allocations: [
       {
         month: 'Jan',
@@ -98,8 +98,8 @@ const factories = [
   },
   {
     factoryId: 'F002',
-    factoryName: 'Gilli',
-    location: 'Bangalore',
+    factoryName: 'ALPHA APPARELS',
+    location: 'SURAT',
     allocations: [
       {
         month: 'Jan',
@@ -165,7 +165,7 @@ const factories = [
   },
   {
     factoryId: 'F003',
-    factoryName: 'Sarkar',
+    factoryName: 'EXCEL KNITWEAR',
     location: 'Mumbai',
     allocations: [
       {

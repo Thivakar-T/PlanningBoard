@@ -227,8 +227,8 @@ class dashboard extends Component {
           </h5>
         </div>
         <div className="row py-2 mx-2 text-center">
-          <div className="col-1 pt-1 border">Place</div>
-          <div className="col-11">
+          <div className="col-2 pt-1 border">Factory</div>
+          <div className="col-10">
             <div className="row ">
               {this.state.months.map((item) => {
                 return (
@@ -246,8 +246,10 @@ class dashboard extends Component {
               className="row py-2 mx-2 text-center"
               key={`${factory.factoryId}`}
             >
-              <div className="col-1 border height pt-1">{factory.location}</div>
-              <div className="col-11">
+              <div className="col-2 border height pt-1">
+                {factory.factoryName}
+              </div>
+              <div className="col-10">
                 <div className="row ">
                   {factory.allocations.map((allocation) => {
                     return (
@@ -284,7 +286,7 @@ class dashboard extends Component {
                             <div
                               style={{
                                 height: `${100 / allocation.orders.length}%`,
-                                backgroundColor: `#${order.color}`,
+                                backgroundColor: `#${cellColor}`,
                               }}
                               className={`height`}
                               onDrop={(e) => {
@@ -308,8 +310,8 @@ class dashboard extends Component {
             <hr className="mx-5 " />
           </div>
           <div>
-            <span>copywright </span>
-            <span>@ 2020 Planning Board.</span>
+            <span>Copyright </span>
+            <span>@ 2021 Planning Board</span>
           </div>
         </footer>
         <div
@@ -354,7 +356,7 @@ class dashboard extends Component {
                     <div
                       draggable="true"
                       onDragStart={(e) => this.onDragStart(e, order.orderId)}
-                      className="col-xs-3 col-sm-3 col-md-3"
+                      className="col-xs-4 col-sm-4 col-md-4"
                       key={order.orderId}
                     >
                       <div
