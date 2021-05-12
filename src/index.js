@@ -12,11 +12,13 @@ import reportWebVitals from './reportWebVitals'
 import authStore from './stores/authStore'
 import commonStore from './stores/commonStore'
 import userStore from './stores/userStore'
+import orderStore from './stores/orderStore'
 
 const stores = {
   authStore,
   commonStore,
   userStore,
+  orderStore,
 }
 
 // For easier debugging

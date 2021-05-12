@@ -5,7 +5,8 @@ import authStore from './stores/authStore'
 
 const superagent = superagentPromise(_superagent, global.Promise)
 
-const API_ROOT = 'https://api.planningboard.com/api'
+const API_ROOT =
+  'http://ec2-54-179-189-29.ap-southeast-1.compute.amazonaws.com:8080/api'
 
 const encode = encodeURIComponent
 
@@ -60,6 +61,11 @@ const Auth = {
   save: (user) => requests.put('/user', { user }),
 }
 
+const Order = {
+  pullOrder: () => requests.get('/order/get'),
+}
+
 export default {
   Auth,
+  Order,
 }

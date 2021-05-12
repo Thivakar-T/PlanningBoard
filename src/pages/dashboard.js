@@ -7,6 +7,7 @@ import _ from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './dashboard.css'
+import { inject, observer } from 'mobx-react'
 
 class dashboard extends Component {
   constructor() {
@@ -21,6 +22,9 @@ class dashboard extends Component {
       selected_month: '',
       selected_sam: '',
     }
+  }
+  componentDidMount() {
+    this.props.orderStore.pullOrder()
   }
   setFilter = (value) => {
     if (!value || !value.trim()) {
@@ -431,4 +435,4 @@ class dashboard extends Component {
   }
 }
 
-export default dashboard
+export default inject('orderStore')(observer(dashboard))
