@@ -13,12 +13,16 @@ import authStore from './stores/authStore'
 import commonStore from './stores/commonStore'
 import userStore from './stores/userStore'
 import orderStore from './stores/orderStore'
+import styleStore from './stores/styleStore'
+import factoryStore from './stores/factoryStore'
 
 const stores = {
   authStore,
   commonStore,
   userStore,
   orderStore,
+  styleStore,
+  factoryStore,
 }
 
 // For easier debugging

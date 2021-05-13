@@ -65,7 +65,17 @@ const Order = {
   pullOrder: () => requests.get('/order/get'),
 }
 
+const Style = {
+  pullStyle: () => requests.get('/style/get'),
+}
+
+const Factory = {
+  pullFactory: () => requests.get('/factory/get'),
+}
+
 export default {
   Auth,
   Order,
+  Style,
+  Factory,
 }

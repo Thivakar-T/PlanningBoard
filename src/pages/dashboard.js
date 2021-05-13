@@ -9,6 +9,8 @@ import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 import './dashboard.css'
 import { inject, observer } from 'mobx-react'
 
+@inject('orderStore', 'styleStore', 'factoryStore')
+@observer
 class dashboard extends Component {
   constructor() {
     super()
@@ -24,7 +26,7 @@ class dashboard extends Component {
     }
   }
   componentDidMount() {
-    this.props.orderStore.pullOrder()
+    this.props.orderStore.pullOrders()
   }
   setFilter = (value) => {
     if (!value || !value.trim()) {
@@ -128,13 +130,16 @@ class dashboard extends Component {
     console.log({ factories: new_factories })
     this.setState({
       orders: filtered_orders,
-      filteredList: filtered_orders,
     })
     this.setState({
       factories: new_factories,
     })
   }
   render() {
+    const { orders, loading_orders } = this.props.orderStore
+    const { styles, loading_styles } = this.props.styleStore
+    const { factories, factories_loading } = this.props.factoryStore
+    console.log({ orders, styles, loading_orders, loading_styles })
     return (
       <div className="container">
         <div className="py-3 mr-1 row">
@@ -172,7 +177,7 @@ class dashboard extends Component {
           </div>
           <div className="align-right">
             <div>
-              Orders pending allocation : <b>{this.state.orders.length}</b>
+              Orders pending allocation : <b>{orders.length}</b>
             </div>
           </div>
         </div>
@@ -181,45 +186,55 @@ class dashboard extends Component {
           <div id="demo" className="carousel slide" data-ride="carousel">
             <div className="container carousel-inner no-padding order_container">
               <div className="carousel-item active">
-                {this.state.orders
-                  .filter(
-                    (item) =>
-                      item.orderId.includes(this.state.filter) ||
-                      !this.state.filter
-                  )
-                  .map((order) => {
-                    return (
-                      <div
-                        draggable="true"
-                        onDragStart={(e) => this.onDragStart(e, order.orderId)}
-                        className="col-xs-3 col-sm-3 col-md-3"
-                        key={order.orderId}
-                      >
-                        <div
-                          className={`card text-white border py-3 px-5 my-col`}
-                          style={{ backgroundColor: `#${order.color}` }}
-                        >
-                          <h6 className="font-weight-400">
-                            {' '}
-                            <span className="">ID</span> :{' '}
-                            <span className="order_label">{order.orderId}</span>
-                          </h6>
-                          <h6 className="font-weight-400">
-                            <span className="">Style</span> :{' '}
-                            <span className="order_label">{order.style}</span>
-                          </h6>
-                          <h6 className="font-weight-400">
-                            <span className="">Quantity</span> :{' '}
-                            <span className="order_label">{order.qty}</span>
-                          </h6>
-                          <h6 className="font-weight-400">
-                            <span className="">SAM</span> :{' '}
-                            <span className="order_label">{order.sam}</span>
-                          </h6>
-                        </div>
-                      </div>
+                {!loading_styles &&
+                  orders.length > 0 &&
+                  _.take(orders, 4)
+                    .filter(
+                      (item) =>
+                        item.orderId.toString().includes(this.state.filter) ||
+                        !this.state.filter
                     )
-                  })}
+                    .map((order) => {
+                      return (
+                        <div
+                          draggable="true"
+                          onDragStart={(e) =>
+                            this.onDragStart(e, order.orderId)
+                          }
+                          className="col-xs-3 col-sm-3 col-md-3"
+                          key={order.orderId}
+                        >
+                          <div
+                            className={`card text-white border py-3 px-5 my-col`}
+                            style={{ backgroundColor: `${order.color}` }}
+                          >
+                            <h6 className="font-weight-400">
+                              {' '}
+                              <span className="">ID</span> :{' '}
+                              <span className="order_label">
+                                {order.orderId}
+                              </span>
+                            </h6>
+                            <h6 className="font-weight-400">
+                              <span className="">Style</span> :{' '}
+                              <span className="order_label">
+                                {order.styleDescription}
+                              </span>
+                            </h6>
+                            <h6 className="font-weight-400">
+                              <span className="">Quantity</span> :{' '}
+                              <span className="order_label">
+                                {order.orderedQty}
+                              </span>
+                            </h6>
+                            <h6 className="font-weight-400">
+                              <span className="">SAM</span> :{' '}
+                              <span className="order_label">{order.sam}</span>
+                            </h6>
+                          </div>
+                        </div>
+                      )
+                    })}
               </div>
             </div>
           </div>
@@ -435,4 +450,4 @@ class dashboard extends Component {
   }
 }
 
-export default inject('orderStore')(observer(dashboard))
+export default dashboard
