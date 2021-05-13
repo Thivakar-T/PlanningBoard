@@ -23,12 +23,10 @@ export class FactoryStore {
     let selected_factory = this.factories.filter(
       (factory) => factory.factoryId === factoryId
     )
-    console.log(selected_factory)
     let selected_allocation = selected_factory[0].allocations.filter(
       (allocation) => allocation.month === month
     )
     selected_allocation[0].orders.push(selected_order[0])
-    console.log(toJS(this.factories))
   }
 
   unallocateOrder({ factoryId, orderId, month }) {

@@ -37,7 +37,6 @@ class dashboard extends Component {
     if (allocated_sam === 0) {
       return 'white'
     }
-    console.log({ allocated_sam, allocation_sam: allocation.sam })
     if (allocated_sam > allocation.sam) {
       return utilization.high.color
     } else if (allocated_sam < allocation.sam) {
@@ -48,7 +47,6 @@ class dashboard extends Component {
   }
 
   onDragStart = (ev, orderId) => {
-    console.log('dragstart:', orderId)
     ev.dataTransfer.setData('orderId', orderId)
   }
   onDragOver = (ev) => {
@@ -65,8 +63,6 @@ class dashboard extends Component {
     })
   }
   onUnallocate = (ev, factoryId, month, orderId) => {
-    console.log(factoryId)
-    console.log(month)
     const {
       order,
       selected_allocation,
@@ -84,8 +80,14 @@ class dashboard extends Component {
   render() {
     const { orders, loading_orders } = this.props.orderStore
     const { styles, loading_styles } = this.props.styleStore
-    const { factories } = this.props.factoryStore
-    console.log({ orders, styles, loading_orders, loading_styles })
+    const { factories, loading_factories } = this.props.factoryStore
+    console.log({
+      orders,
+      styles,
+      loading_orders,
+      loading_styles,
+      loading_factories,
+    })
     return (
       <div className="container">
         <div className="py-3 mr-1 row">
