@@ -157,7 +157,7 @@ class dashboard extends Component {
                     name="filter"
                     type="text"
                     value={this.state.filter}
-                    placeholder="Type here to filter your orders"
+                    placeholder="Search by ID or Style"
                     onChange={(event) => this.setFilter(event.target.value)}
                   />
                 </div>
@@ -179,7 +179,14 @@ class dashboard extends Component {
                 orders
                   .filter(
                     (item) =>
-                      item.orderNo.toString().includes(this.state.filter) ||
+                      item.orderNo
+                        .toString()
+                        .toUpperCase()
+                        .includes(this.state.filter.toUpperCase()) ||
+                      item.styleDescription
+                        .toString()
+                        .toUpperCase()
+                        .includes(this.state.filter.toUpperCase()) ||
                       !this.state.filter
                   )
                   .map((order) => {
