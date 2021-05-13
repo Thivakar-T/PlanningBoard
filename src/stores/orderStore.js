@@ -18,20 +18,10 @@ export class OrderStore {
 
   orderSAM(orders: []) {
     orders.map((order: any) => {
-      order.color = this.orderColor()
       order.sam = order.orderedQty * order.styleSam
       return order
     })
     return orders
-  }
-
-  orderColor() {
-    var letters = '0123456789ABCDEF'
-    var color = '#'
-    for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)]
-    }
-    return color
   }
 
   allocateOrder({ factoryId, orderId, month }) {

@@ -2,6 +2,16 @@
 .order_label{
   font-size: 0.8em;
 }
+.order_label.style_des{
+  width: 160px;
+  overflow: hidden;
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+}
 
 .order_container{
   cursor:grab;

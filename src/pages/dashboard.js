@@ -179,7 +179,7 @@ class dashboard extends Component {
                 orders
                   .filter(
                     (item) =>
-                      item.orderId.toString().includes(this.state.filter) ||
+                      item.orderNo.toString().includes(this.state.filter) ||
                       !this.state.filter
                   )
                   .map((order) => {
@@ -192,27 +192,27 @@ class dashboard extends Component {
                       >
                         <div
                           className={`card card-block text-white border py-3 px-5 my-col`}
-                          style={{ backgroundColor: `${order.color}` }}
+                          style={{ backgroundColor: `${order.styleColour}` }}
                         >
                           <h6 className="font-weight-400">
                             {' '}
-                            <span className="">ID</span> :{' '}
-                            <span className="order_label">{order.orderId}</span>
+                            <span className="order_label">ID</span> :{' '}
+                            <span className="order_label">{order.orderNo}</span>
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Style</span> :{' '}
-                            <span className="order_label">
+                            <span className="order_label">Style</span> :{' '}
+                            <span className="order_label style_des">
                               {order.styleDescription}
                             </span>
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">Quantity</span> :{' '}
+                            <span className="order_label">Quantity</span> :{' '}
                             <span className="order_label">
                               {order.orderedQty}
                             </span>
                           </h6>
                           <h6 className="font-weight-400">
-                            <span className="">SAM</span> :{' '}
+                            <span className="order_label">SAM</span> :{' '}
                             <span className="order_label">{order.sam}</span>
                           </h6>
                         </div>
@@ -317,9 +317,9 @@ class dashboard extends Component {
                 </div>
                 <div className="modal-body row">
                   <p>
-                    <span>Selected Factory: {this.state.selected_factory}</span>
+                    <span>Factory: {this.state.selected_factory}</span>
                     <span style={{ marginLeft: '25px' }}>
-                      Selected Month:{' '}
+                      Month:{' '}
                       {this.state.selected_allocation &&
                         this.state.selected_allocation.month}
                     </span>
@@ -343,7 +343,7 @@ class dashboard extends Component {
                           onDragStart={(e) =>
                             this.onDragStart(e, order.orderId)
                           }
-                          className="col-xs-4 col-sm-4 col-md-4"
+                          className="col-xs-3 col-sm-3 col-md-3"
                           key={order.orderId}
                         >
                           <div
@@ -381,25 +381,27 @@ class dashboard extends Component {
                             </h6>
                             <h6 className="font-weight-400">
                               {' '}
-                              <span className="">ID</span> :{' '}
+                              <span className="order_label">ID</span> :{' '}
                               <span className="order_label">
-                                {order.orderId}
+                                {order.orderNo}
                               </span>
                             </h6>
                             <h6 className="font-weight-400">
-                              <span className="">Style</span> :{' '}
-                              <span className="order_label">
+                              <span className="order_label ">Style</span> :{' '}
+                              <span className="order_label style_des">
                                 {order.styleDescription}
                               </span>
                             </h6>
                             <h6 className="font-weight-400">
-                              <span className="">Quantity</span> :{' '}
+                              <span className="order_label">Quantity</span> :{' '}
                               <span className="order_label">
-                                {order.orderedQty}
+                                {order.orderedQty
+                                  ? order.orderedQty
+                                  : order.qty}
                               </span>
                             </h6>
                             <h6 className="font-weight-400">
-                              <span className="">SAM</span> :{' '}
+                              <span className="order_label">SAM</span> :{' '}
                               <span className="order_label">{order.sam}</span>
                             </h6>
                           </div>
