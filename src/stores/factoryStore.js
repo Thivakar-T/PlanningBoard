@@ -4,7 +4,7 @@ import factories from './../data/factories'
 import orderStore from './orderStore'
 
 export class FactoryStore {
-  factories = factories
+  factories = [] //factories
   loading_factories = false
 
   constructor() {
@@ -13,7 +13,7 @@ export class FactoryStore {
       loading_factories: observable,
       pullFactories: action,
     })
-    // this.pullFactories()
+    this.pullFactories()
   }
 
   allocateOrder({ factoryId, orderId, month }) {
@@ -21,7 +21,7 @@ export class FactoryStore {
       return order.orderId.toString() === orderId.toString()
     })
     let selected_factory = this.factories.filter(
-      (factory) => factory.factoryId === factoryId
+      (factory) => factory.id === factoryId
     )
     let selected_allocation = selected_factory[0].allocations.filter(
       (allocation) => allocation.month === month
@@ -31,7 +31,7 @@ export class FactoryStore {
 
   unallocateOrder({ factoryId, orderId, month }) {
     let selected_factory = this.factories.filter(
-      (factory) => factory.factoryId === factoryId
+      (factory) => factory.id === factoryId
     )
     let selected_allocation = selected_factory[0].allocations.filter(
       (allocation) => allocation.month === month
@@ -47,17 +47,17 @@ export class FactoryStore {
 
   pullFactories() {
     this.loading_factories = true
-    // return agent.Factory.pullFactory()
-    //   .then(
-    //     action(({ data }) => {
-    //       this.factories = data
-    //     })
-    //   )
-    //   .finally(
-    //     action(() => {
-    //       this.loading_factories = false
-    //     })
-    //   )
+    return agent.Factory.pullFactory()
+      .then(
+        action(({ data }) => {
+          this.factories = data
+        })
+      )
+      .finally(
+        action(() => {
+          this.loading_factories = false
+        })
+      )
   }
 }
 

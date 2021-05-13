@@ -34,14 +34,48 @@ export class OrderStore {
     return color
   }
 
-  allocateOrder({ orderId }) {
+  allocateOrder({ factoryId, orderId, month }) {
+    this.loading_orders = true
     this.orders = this.orders.filter((order) => {
       return order.orderId.toString() !== orderId.toString()
     })
+    return agent.Order.allocateOrder({ factoryId, orderId, month })
+      .then(
+        action(({ data }) => {
+          console.log(data)
+        })
+      )
+      .catch(
+        action((err) => {
+          console.log({ err })
+        })
+      )
+      .finally(
+        action(() => {
+          this.loading_orders = false
+        })
+      )
   }
 
-  unallocateOrder({ order }) {
+  unallocateOrder({ factoryId, orderId, month, order }) {
+    this.loading_orders = true
     this.orders = this.orders.concat(order)
+    return agent.Order.unallocateOrder({ factoryId, orderId, month })
+      .then(
+        action(({ data }) => {
+          console.log(data)
+        })
+      )
+      .catch(
+        action((err) => {
+          console.log({ err })
+        })
+      )
+      .finally(
+        action(() => {
+          this.loading_orders = false
+        })
+      )
   }
 
   pullOrders() {
@@ -49,8 +83,12 @@ export class OrderStore {
     return agent.Order.pullOrder()
       .then(
         action(({ data }) => {
-          let items: any = _.take(data, 4)
-          this.orders = this.orderSAM(items)
+          this.orders = this.orderSAM(data)
+        })
+      )
+      .catch(
+        action((err) => {
+          console.log({ err })
         })
       )
       .finally(
