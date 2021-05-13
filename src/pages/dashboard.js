@@ -15,14 +15,10 @@ class dashboard extends Component {
   constructor() {
     super()
     this.state = {
-      orders: orders,
       months: months,
-      factories: factories,
       filter: '',
-      selected_orders: [],
+      selected_allocation: {},
       selected_factory: '',
-      selected_month: '',
-      selected_sam: '',
     }
   }
   componentDidMount() {
@@ -41,6 +37,7 @@ class dashboard extends Component {
     if (allocated_sam === 0) {
       return 'white'
     }
+    console.log({ allocated_sam, allocation_sam: allocation.sam })
     if (allocated_sam > allocation.sam) {
       return utilization.high.color
     } else if (allocated_sam < allocation.sam) {
@@ -61,84 +58,33 @@ class dashboard extends Component {
     ev.preventDefault()
   }
 
-  onClick = (ev, factoryId, month, sam) => {
-    console.log(factoryId)
-    console.log(month)
+  onClick = (ev, factoryId, allocation) => {
     this.setState({
       selected_factory: factoryId,
-      selected_month: month,
-      selected_sam: sam,
-    })
-    let selected_factory = factories.filter(
-      (factory) => factory.factoryId === factoryId
-    )
-    console.log(selected_factory)
-    let selected_allocation = selected_factory[0].allocations.filter(
-      (allocation) => allocation.month === month
-    )
-    this.setState({
-      selected_orders: selected_allocation[0].orders,
+      selected_allocation: allocation,
     })
   }
   onUnallocate = (ev, factoryId, month, orderId) => {
     console.log(factoryId)
     console.log(month)
-    const factories = this.state.factories
+    const {
+      order,
+      selected_allocation,
+    } = this.props.factoryStore.unallocateOrder({ factoryId, orderId, month })
+    this.props.orderStore.unallocateOrder({ order })
     this.setState({
-      selected_factory: factoryId,
-      selected_month: month,
-    })
-    let selected_factory = factories.filter(
-      (factory) => factory.factoryId === factoryId
-    )
-    console.log(selected_factory)
-    let selected_allocation = selected_factory[0].allocations.filter(
-      (allocation) => allocation.month === month
-    )
-    let order = selected_allocation[0].orders.filter(
-      (order) => order.orderId === orderId
-    )
-    selected_allocation[0].orders = selected_allocation[0].orders.filter(
-      (order) => order.orderId !== orderId
-    )
-    const selected_orders = this.state.selected_orders.filter((order) => {
-      return order.orderId !== orderId
-    })
-    this.setState({
-      factories: factories,
-      orders: this.state.orders.concat(order),
-      selected_orders: selected_orders,
+      selected_allocation,
     })
   }
   onDrop = (ev, factoryId, month) => {
     let orderId = ev.dataTransfer.getData('orderId')
-    let selected_order = this.state.orders.filter((order) => {
-      return order.orderId === orderId
-    })
-    let filtered_orders = this.state.orders.filter((order) => {
-      return order.orderId !== orderId
-    })
-    const new_factories = this.state.factories
-    let selected_factory = factories.filter(
-      (factory) => factory.factoryId === factoryId
-    )
-    console.log(selected_factory)
-    let selected_allocation = selected_factory[0].allocations.filter(
-      (allocation) => allocation.month === month
-    )
-    selected_allocation[0].orders.push(selected_order[0])
-    console.log({ factories: new_factories })
-    this.setState({
-      orders: filtered_orders,
-    })
-    this.setState({
-      factories: new_factories,
-    })
+    this.props.factoryStore.allocateOrder({ factoryId, orderId, month })
+    this.props.orderStore.allocateOrder({ orderId })
   }
   render() {
     const { orders, loading_orders } = this.props.orderStore
     const { styles, loading_styles } = this.props.styleStore
-    const { factories, factories_loading } = this.props.factoryStore
+    const { factories } = this.props.factoryStore
     console.log({ orders, styles, loading_orders, loading_styles })
     return (
       <div className="container">
@@ -259,7 +205,7 @@ class dashboard extends Component {
             </div>
           </div>
         </div>
-        {this.state.factories.map((factory) => {
+        {factories.map((factory) => {
           return (
             <div
               className="row py-2 mx-2 text-center"
@@ -292,29 +238,9 @@ class dashboard extends Component {
                             )}`,
                           }}
                           onClick={(e) => {
-                            this.onClick(
-                              e,
-                              factory.factoryId,
-                              allocation.month,
-                              allocation.sam
-                            )
+                            this.onClick(e, factory.factoryId, allocation)
                           }}
                         ></div>
-                        {/* {allocation.orders.map((order) => {
-                          return (
-                            <div
-                              style={{
-                                height: `${100 / allocation.orders.length}%`,
-                                backgroundColor: `#${cellColor}`,
-                              }}
-                              className={`height`}
-                              onDrop={(e) => {
-                                this.allowDrop(e)
-                              }}
-                              key={`${factory.factoryId}-${allocation.month}-${order.orderId}`}
-                            ></div>
-                          )
-                        })} */}
                       </div>
                     )
                   })}
@@ -360,78 +286,89 @@ class dashboard extends Component {
                 <p>
                   <span>Selected Factory: {this.state.selected_factory}</span>
                   <span style={{ marginLeft: '25px' }}>
-                    Selected Month: {this.state.selected_month}
+                    Selected Month:{' '}
+                    {this.state.selected_allocation &&
+                      this.state.selected_allocation.month}
                   </span>
                   <span style={{ marginLeft: '25px' }}>
-                    Approved SAM: {this.state.selected_sam}
+                    Approved SAM:{' '}
+                    {this.state.selected_allocation &&
+                      this.state.selected_allocation.sam}
                   </span>
                   <span style={{ marginLeft: '25px' }}>
-                    Allocated SAM: {_.sumBy(this.state.selected_orders, 'sam')}
+                    Allocated SAM:{' '}
+                    {this.state.selected_allocation.orders &&
+                      _.sumBy(this.state.selected_allocation.orders, 'sam')}
                   </span>
                 </p>
 
-                {this.state.selected_orders.map((order) => {
-                  return (
-                    <div
-                      draggable="true"
-                      onDragStart={(e) => this.onDragStart(e, order.orderId)}
-                      className="col-xs-4 col-sm-4 col-md-4"
-                      key={order.orderId}
-                    >
+                {this.state.selected_allocation.orders &&
+                  this.state.selected_allocation.orders.map((order) => {
+                    return (
                       <div
-                        className={`text-white border py-1 px-3 my-col height `}
-                        style={{
-                          backgroundColor: `#${order.color}`,
-                          height: '120px',
-                          position: 'relative',
-                        }}
+                        draggable="true"
+                        onDragStart={(e) => this.onDragStart(e, order.orderId)}
+                        className="col-xs-4 col-sm-4 col-md-4"
+                        key={order.orderId}
                       >
-                        <h6 className="font-weight-400">
-                          <span
-                            style={{
-                              position: 'absolute',
-                              right: '6px',
-                              top: '10px',
-                              cursor: 'pointer',
-                            }}
-                            className=""
-                            onClick={(e) => {
-                              this.onUnallocate(
-                                e,
-                                this.state.selected_factory,
-                                this.state.selected_month,
-                                order.orderId
-                              )
-                            }}
-                          >
-                            <FontAwesomeIcon
-                              className="close"
-                              color="black"
-                              icon={faTrashAlt}
-                            />
-                          </span>
-                        </h6>
-                        <h6 className="font-weight-400">
-                          {' '}
-                          <span className="">ID</span> :{' '}
-                          <span className="order_label">{order.orderId}</span>
-                        </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">Style</span> :{' '}
-                          <span className="order_label">{order.style}</span>
-                        </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">Quantity</span> :{' '}
-                          <span className="order_label">{order.qty}</span>
-                        </h6>
-                        <h6 className="font-weight-400">
-                          <span className="">SAM</span> :{' '}
-                          <span className="order_label">{order.sam}</span>
-                        </h6>
+                        <div
+                          className={`text-white border py-1 px-3 my-col height `}
+                          style={{
+                            backgroundColor: `${order.color}`,
+                            height: '120px',
+                            position: 'relative',
+                          }}
+                        >
+                          <h6 className="font-weight-400">
+                            <span
+                              style={{
+                                position: 'absolute',
+                                right: '6px',
+                                top: '10px',
+                                cursor: 'pointer',
+                              }}
+                              className=""
+                              onClick={(e) => {
+                                this.onUnallocate(
+                                  e,
+                                  this.state.selected_factory,
+                                  this.state.selected_allocation.month,
+                                  order.orderId
+                                )
+                              }}
+                            >
+                              <FontAwesomeIcon
+                                className="close"
+                                color="black"
+                                icon={faTrashAlt}
+                              />
+                            </span>
+                          </h6>
+                          <h6 className="font-weight-400">
+                            {' '}
+                            <span className="">ID</span> :{' '}
+                            <span className="order_label">{order.orderId}</span>
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">Style</span> :{' '}
+                            <span className="order_label">
+                              {order.styleDescription}
+                            </span>
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">Quantity</span> :{' '}
+                            <span className="order_label">
+                              {order.orderedQty}
+                            </span>
+                          </h6>
+                          <h6 className="font-weight-400">
+                            <span className="">SAM</span> :{' '}
+                            <span className="order_label">{order.sam}</span>
+                          </h6>
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
               </div>
               <div className="modal-footer">
                 <button

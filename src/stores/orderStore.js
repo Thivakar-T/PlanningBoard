@@ -1,5 +1,6 @@
 import { observable, action, computed, makeObservable } from 'mobx'
 import agent from '../agent'
+import _ from 'lodash'
 
 export class OrderStore {
   orders = []
@@ -10,6 +11,8 @@ export class OrderStore {
       orders: observable,
       loading_orders: observable,
       pullOrders: action,
+      allocateOrder: action,
+      unallocateOrder: action,
     })
   }
 
@@ -31,12 +34,30 @@ export class OrderStore {
     return color
   }
 
+  allocateOrder({ orderId }) {
+    console.log({ orderId })
+    this.orders = this.orders.filter((order) => {
+      return order.orderId.toString() !== orderId.toString()
+    })
+
+    // console.log({ factories: new_factories })
+    // this.setState({
+    //   factories: new_factories,
+    // })
+  }
+
+  unallocateOrder({ order }) {
+    console.log({ order })
+    this.orders = this.orders.concat(order)
+  }
+
   pullOrders() {
     this.loading_orders = true
     return agent.Order.pullOrder()
       .then(
         action(({ data }) => {
-          this.orders = this.orderSAM(data)
+          let items: any = _.take(data, 4)
+          this.orders = this.orderSAM(items)
         })
       )
       .finally(
