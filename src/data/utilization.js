@@ -3,7 +3,7 @@ const utilization_levels = {
     color: 'green',
   },
   low: {
-    color: 'wheat',
+    color: '#1660E8',
   },
   high: {
     color: 'red',
