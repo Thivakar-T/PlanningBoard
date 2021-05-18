@@ -3,7 +3,10 @@ import months from './../data/months'
 import utilization from './../data/utilization'
 import _ from 'lodash'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+import {
+  faTrashAlt,
+  faBalanceScaleRight,
+} from '@fortawesome/free-solid-svg-icons'
 import './dashboard.css'
 import { inject, observer } from 'mobx-react'
 import PropagateLoader from 'react-spinners/PropagateLoader'
@@ -54,6 +57,15 @@ class dashboard extends Component {
     } else {
       return utilization.equal.color
     }
+  }
+
+  is_over_utilisation(index) {
+    const approved_sam = this.state.selected_allocation.machineMins
+    const allocated_sam = _.sumBy(
+      _.slice(this.state.selected_allocation.orders, 0, index + 1),
+      'sam'
+    )
+    return allocated_sam > approved_sam
   }
 
   onDragStart = (ev, orderId) => {
@@ -343,78 +355,100 @@ class dashboard extends Component {
                   </p>
 
                   {this.state.selected_allocation.orders &&
-                    this.state.selected_allocation.orders.map((order) => {
-                      return (
-                        <div
-                          draggable="true"
-                          onDragStart={(e) =>
-                            this.onDragStart(e, order.orderId)
-                          }
-                          className="col-xs-3 col-sm-3 col-md-3"
-                          key={order.orderId}
-                        >
+                    this.state.selected_allocation.orders.map(
+                      (order, index) => {
+                        return (
                           <div
-                            className={`text-white border py-1 px-3 my-col height `}
-                            style={{
-                              backgroundColor: `${order.styleColour}`,
-                              height: '120px',
-                              position: 'relative',
-                            }}
+                            draggable="true"
+                            onDragStart={(e) =>
+                              this.onDragStart(e, order.orderId)
+                            }
+                            className="col-xs-3 col-sm-3 col-md-3"
+                            key={order.orderId}
                           >
-                            <h6 className="font-weight-400">
-                              <span
-                                style={{
-                                  position: 'absolute',
-                                  right: '6px',
-                                  top: '10px',
-                                  cursor: 'pointer',
-                                }}
-                                className=""
-                                onClick={(e) => {
-                                  this.onUnallocate(
-                                    e,
-                                    this.state.selected_factory,
-                                    this.state.selected_allocation.month,
-                                    order.orderId
-                                  )
-                                }}
-                              >
-                                <FontAwesomeIcon
-                                  className="close"
-                                  color="black"
-                                  icon={faTrashAlt}
-                                />
-                              </span>
-                            </h6>
-                            <h6 className="font-weight-400">
-                              {' '}
-                              <span className="order_label">ID</span> :{' '}
-                              <span className="order_label">
-                                {order.orderNo}
-                              </span>
-                            </h6>
-                            <h6 className="font-weight-400">
-                              <span className="order_label ">Style</span> :{' '}
-                              <span className="order_label style_des">
-                                {order.styleDescription}
-                              </span>
-                            </h6>
-                            <h6 className="font-weight-400">
-                              <span className="order_label">Quantity</span> :{' '}
-                              <span className="order_label">
-                                {order.orderedQty
-                                  ? order.orderedQty
-                                  : order.qty}
-                              </span>
-                            </h6>
-                            <h6 className="font-weight-400">
-                              <span className="order_label">SAM</span> :{' '}
-                              <span className="order_label">{order.sam}</span>
-                            </h6>
+                            <div
+                              className={`text-white border py-1 px-3 my-col height  `}
+                              style={{
+                                backgroundColor: `${order.styleColour}`,
+                                height: '120px',
+                                position: 'relative',
+                              }}
+                            >
+                              <h6 className="font-weight-400">
+                                <span
+                                  style={{
+                                    position: 'absolute',
+                                    right: '6px',
+                                    top: '10px',
+                                    cursor: 'pointer',
+                                  }}
+                                  className=""
+                                  onClick={(e) => {
+                                    this.onUnallocate(
+                                      e,
+                                      this.state.selected_factory,
+                                      this.state.selected_allocation.month,
+                                      order.orderId
+                                    )
+                                  }}
+                                >
+                                  <FontAwesomeIcon
+                                    className="close"
+                                    color="black"
+                                    icon={faTrashAlt}
+                                  />
+                                </span>
+                              </h6>
+                              <h6 className="font-weight-400">
+                                <span
+                                  style={{
+                                    position: 'absolute',
+                                    right: '6px',
+                                    bottom: '10px',
+                                  }}
+                                  className=""
+                                >
+                                  <FontAwesomeIcon
+                                    className={`close ${
+                                      this.is_over_utilisation(index)
+                                        ? 'd-block'
+                                        : 'd-none'
+                                    }`}
+                                    color="red"
+                                    icon={faBalanceScaleRight}
+                                  />
+                                </span>
+                              </h6>
+                              <h6 className="font-weight-400">
+                                {' '}
+                                <span className="order_label">ID</span> :{' '}
+                                <span className="order_label">
+                                  {order.orderNo}
+                                </span>
+                              </h6>
+                              <h6 className="font-weight-400">
+                                <span className="order_label ">Style</span> :{' '}
+                                <span className="order_label style_des">
+                                  {order.styleDescription}
+                                </span>
+                              </h6>
+                              <h6 className="font-weight-400">
+                                <span className="order_label">Quantity</span> :{' '}
+                                <span className="order_label">
+                                  {order.orderedQty
+                                    ? order.orderedQty
+                                    : order.qty}
+                                </span>
+                              </h6>
+                              <h6 className="font-weight-400">
+                                <span className="order_label">SAM</span> :{' '}
+                                <span className="order_label">{order.sam}</span>
+                              </h6>
+                            </div>
                           </div>
-                        </div>
-                      )
-                    })}
+                        )
+                      }
+                    )}
                 </div>
                 <div className="modal-footer">
                   <button
