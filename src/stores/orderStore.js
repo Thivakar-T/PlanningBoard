@@ -32,12 +32,10 @@ export class OrderStore {
     })
     const orders = _.map(orderIds, (orderId) => {
       return {
-        factoryId,
-        orderId,
-        month,
+        orderId: parseInt(orderId),
       }
     })
-    return agent.Order.allocateOrder(orders)
+    return agent.Order.allocateOrder({ factoryId, month, orders })
       .then(
         action(({ data }) => {
           console.log(data)

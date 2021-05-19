@@ -204,7 +204,9 @@ class dashboard extends Component {
               </div>
               <div className="col-3">
                 <span
-                  style={{ cursor: 'pointer' }}
+                  style={{
+                    cursor: 'pointer',
+                  }}
                   className={`${
                     this.state.filter && this.filter_orders(orders).length > 0
                       ? 'd-visible'
@@ -213,12 +215,14 @@ class dashboard extends Component {
                 >
                   <div
                     draggable="true"
-                    className="card py-2 text-black border my-col"
+                    className="card py-2 text-black my-col"
                     onDragStart={(e) => this.onFilteredDragStart(e, orders)}
                     style={{
                       backgroundColor: 'darkseagreen',
                       textAlign: 'center',
                       borderRadius: '5px',
+                      border: '1px solid #4e3e3e',
+                      borderStyle: 'dashed',
                     }}
                   >
                     {' '}
