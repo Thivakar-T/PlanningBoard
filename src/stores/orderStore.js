@@ -24,12 +24,20 @@ export class OrderStore {
     return orders
   }
 
-  allocateOrder({ factoryId, orderId, month }) {
+  allocateOrder({ factoryId, orderIds, month }) {
     this.loading_orders = true
+    const toString = (value) => value.toString()
     this.orders = this.orders.filter((order) => {
-      return order.orderId.toString() !== orderId.toString()
+      return _.map(orderIds, toString).indexOf(order.orderId.toString()) === -1
     })
-    return agent.Order.allocateOrder({ factoryId, orderId, month })
+    const orders = _.map(orderIds, (orderId) => {
+      return {
+        factoryId,
+        orderId,
+        month,
+      }
+    })
+    return agent.Order.allocateOrder(orders)
       .then(
         action(({ data }) => {
           console.log(data)

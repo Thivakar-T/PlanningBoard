@@ -2,6 +2,7 @@ import { observable, action, computed, makeObservable, toJS } from 'mobx'
 import agent from '../agent'
 import factories from './../data/factories'
 import orderStore from './orderStore'
+import _ from 'lodash'
 
 export class FactoryStore {
   factories = [] //factories
@@ -16,9 +17,10 @@ export class FactoryStore {
     this.pullFactories()
   }
 
-  allocateOrder({ factoryId, orderId, month }) {
-    const selected_order = orderStore.orders.filter((order) => {
-      return order.orderId.toString() === orderId.toString()
+  allocateOrder({ factoryId, orderIds, month }) {
+    const toString = (value) => value.toString()
+    const selected_orders = orderStore.orders.filter((order) => {
+      return _.map(orderIds, toString).indexOf(order.orderId.toString()) !== -1
     })
     let selected_factory = this.factories.filter(
       (factory) => factory.id === factoryId
@@ -26,7 +28,9 @@ export class FactoryStore {
     let selected_allocation = selected_factory[0].allocations.filter(
       (allocation) => allocation.month === month
     )
-    selected_allocation[0].orders.push(selected_order[0])
+    selected_allocation[0].orders = selected_allocation[0].orders.concat(
+      selected_orders
+    )
   }
 
   unallocateOrder({ factoryId, orderId, month }) {

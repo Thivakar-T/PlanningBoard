@@ -11,7 +11,7 @@ export class StyleStore {
       loading_styles: observable,
       pullStyles: action,
     })
-    this.pullStyles()
+    //this.pullStyles()
   }
 
   pullStyles() {

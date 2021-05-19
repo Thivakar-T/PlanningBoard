@@ -49,7 +49,6 @@ class dashboard extends Component {
     if (allocated_sam === 0) {
       return 'white'
     }
-    console.log({ allocated_sam, apsaom: allocation.machineMins })
     if (allocated_sam > allocation.machineMins) {
       return utilization.high.color
     } else if (allocated_sam < allocation.machineMins) {
@@ -70,6 +69,24 @@ class dashboard extends Component {
 
   onDragStart = (ev, orderId) => {
     ev.dataTransfer.setData('orderId', orderId)
+  }
+  onFilteredDragStart = (ev, orders) => {
+    const filtered_orders = orders.filter(
+      (item) =>
+        item.orderNo
+          .toString()
+          .toUpperCase()
+          .includes(this.state.filter.toUpperCase()) ||
+        item.styleDescription
+          .toString()
+          .toUpperCase()
+          .includes(this.state.filter.toUpperCase())
+    )
+    const orderIds = _.map(filtered_orders, 'orderId')
+    if (orderIds.length === 0) {
+      ev.preventDefault()
+    }
+    ev.dataTransfer.setData('orderId', orderIds)
   }
   onDragOver = (ev) => {
     ev.preventDefault()
@@ -95,21 +112,29 @@ class dashboard extends Component {
     })
   }
   onDrop = (ev, factoryId, month) => {
-    let orderId = ev.dataTransfer.getData('orderId')
-    this.props.factoryStore.allocateOrder({ factoryId, orderId, month })
-    this.props.orderStore.allocateOrder({ factoryId, orderId, month })
+    let orderIds = ev.dataTransfer.getData('orderId')
+    orderIds = orderIds.split(',')
+    this.props.factoryStore.allocateOrder({ factoryId, orderIds, month })
+    this.props.orderStore.allocateOrder({ factoryId, orderIds, month })
+  }
+  filter_orders = (orders) => {
+    return orders.filter(
+      (item) =>
+        item.orderNo
+          .toString()
+          .toUpperCase()
+          .includes(this.state.filter.toUpperCase()) ||
+        item.styleDescription
+          .toString()
+          .toUpperCase()
+          .includes(this.state.filter.toUpperCase())
+    )
   }
   render() {
     const { orders, loading_orders } = this.props.orderStore
     const { styles, loading_styles } = this.props.styleStore
     const { factories, loading_factories } = this.props.factoryStore
-    console.log({
-      orders,
-      styles,
-      loading_orders,
-      loading_styles,
-      loading_factories,
-    })
+
     return (
       <>
         <div
@@ -160,8 +185,11 @@ class dashboard extends Component {
           <br />
           <div className="main">
             <div className="row">
-              <div className="col-6">
-                <div className="form-group has-search" style={{ width: '50%' }}>
+              <div className="col-3">
+                <div
+                  className="form-group has-search"
+                  style={{ width: '95%', marginBottom: '5px' }}
+                >
                   <span className="fa fa-search form-control-feedback"></span>
                   <input
                     id="filter"
@@ -173,6 +201,30 @@ class dashboard extends Component {
                     onChange={(event) => this.setFilter(event.target.value)}
                   />
                 </div>
+              </div>
+              <div className="col-3">
+                <span
+                  style={{ cursor: 'pointer' }}
+                  className={`${
+                    this.state.filter && this.filter_orders(orders).length > 0
+                      ? 'd-visible'
+                      : 'd-none'
+                  }`}
+                >
+                  <div
+                    draggable="true"
+                    className="card py-2 text-black border my-col"
+                    onDragStart={(e) => this.onFilteredDragStart(e, orders)}
+                    style={{
+                      backgroundColor: 'darkseagreen',
+                      textAlign: 'center',
+                      borderRadius: '5px',
+                    }}
+                  >
+                    {' '}
+                    Drag all {this.filter_orders(orders).length} filtered orders
+                  </div>
+                </span>
               </div>
               <div className="col-6">
                 <div className="align-right">
