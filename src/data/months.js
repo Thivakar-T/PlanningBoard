@@ -10,10 +10,8 @@ const months = () => {
       month: dateStart.format('MMM YY'),
       id: dateStart.format('M'),
     })
-    console.log(months)
     dateStart.add(1, 'month')
   }
-  console.log(months)
   return months
 }
 export default months()

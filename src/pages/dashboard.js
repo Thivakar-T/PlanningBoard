@@ -2,15 +2,16 @@ import React, { Component } from 'react'
 import months from './../data/months'
 import utilization from './../data/utilization'
 import _ from 'lodash'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faTrashAlt,
-  faBalanceScaleRight,
-} from '@fortawesome/free-solid-svg-icons'
 import './dashboard.css'
 import { inject, observer } from 'mobx-react'
 import PropagateLoader from 'react-spinners/PropagateLoader'
 import { css } from '@emotion/core'
+import AllocationDetail from './components/AllocationDetail'
+import OrderSelection from './components/OrderSelection'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFilter } from '@fortawesome/free-solid-svg-icons'
+import { toJS } from 'mobx'
+import DragImg from './DragImage.png'
 
 const override = css`
   display: block;
@@ -29,8 +30,10 @@ class dashboard extends Component {
     this.state = {
       months: months,
       filter: '',
+      selected_orders: [],
       selected_allocation: {},
-      selected_factory: '',
+      selected_factory_id: '',
+      selected_factory_name: '',
     }
   }
   componentDidMount() {
@@ -69,6 +72,10 @@ class dashboard extends Component {
 
   onDragStart = (ev, orderId) => {
     ev.dataTransfer.setData('orderId', orderId)
+    ev.target.style.cursor = 'grabbing'
+    const image = new Image()
+    image.src = 'https://i.ibb.co/7yHnKy0/Drag-Image.png'
+    ev.dataTransfer.setDragImage(image, 30, 30)
   }
   onFilteredDragStart = (ev, orders) => {
     const filtered_orders = orders.filter(
@@ -87,17 +94,33 @@ class dashboard extends Component {
       ev.preventDefault()
     }
     ev.dataTransfer.setData('orderId', orderIds)
+    ev.target.style.cursor = 'grabbing'
+  }
+  onSelectedDragStart = (ev, orders) => {
+    const selected_orders = _.filter(orders, { selected: true })
+    const orderIds = _.map(selected_orders, 'orderId')
+    if (orderIds.length === 0) {
+      ev.preventDefault()
+    }
+    ev.dataTransfer.setData('orderId', orderIds)
+    ev.target.style.cursor = 'grabbing'
   }
   onDragOver = (ev) => {
+    ev.target.style.border = '2px dashed darkblue'
+    ev.preventDefault()
+  }
+  onDragLeave = (ev) => {
+    ev.target.style.border = 'none'
     ev.preventDefault()
   }
   allowDrop(ev) {
     ev.preventDefault()
   }
 
-  onClick = (ev, factoryId, allocation) => {
+  onClick = (ev, factoryId, factoryName, allocation) => {
     this.setState({
-      selected_factory: factoryId,
+      selected_factory_id: factoryId,
+      selected_factory_name: factoryName,
       selected_allocation: allocation,
     })
   }
@@ -116,6 +139,7 @@ class dashboard extends Component {
     orderIds = orderIds.split(',')
     this.props.factoryStore.allocateOrder({ factoryId, orderIds, month })
     this.props.orderStore.allocateOrder({ factoryId, orderIds, month })
+    ev.target.style.border = 'none'
   }
   filter_orders = (orders) => {
     return orders.filter(
@@ -129,6 +153,30 @@ class dashboard extends Component {
           .toUpperCase()
           .includes(this.state.filter.toUpperCase())
     )
+  }
+  selectOrUnselectOrder(ev, orderId) {
+    const isSelected = ev.target.checked
+    this.props.orderStore.selectOrUnselectOrder({ isSelected, orderId })
+    console.log({ ev, orderId })
+  }
+  selectOrUnselectAllOrders(ev) {
+    const isSelected = ev.target.checked
+    this.props.orderStore.selectOrUnselectAllOrders({ isSelected })
+    console.log({ ev })
+  }
+  clearSelectedOrders(ev) {
+    const isSelected = false
+    this.props.orderStore.selectOrUnselectAllOrders({ isSelected })
+    console.log({ ev })
+  }
+  isAllOrderSelected(orders) {
+    const order_length = orders.length
+    const selected_orders = _.filter(orders, { selected: true })
+    if (order_length !== 0 && order_length === selected_orders.length) {
+      return true
+    } else {
+      return false
+    }
   }
   render() {
     const { orders, loading_orders } = this.props.orderStore
@@ -202,10 +250,65 @@ class dashboard extends Component {
                   />
                 </div>
               </div>
-              <div className="col-3">
+              <div className="col-6">
                 <span
                   style={{
-                    cursor: 'pointer',
+                    cursor: 'grab',
+                    width: '90%',
+                  }}
+                  className={``}
+                >
+                  {!this.state.filter && (
+                    <div
+                      draggable="true"
+                      data-toggle="modal"
+                      data-target="#orderSelection"
+                      className="card py-2 mr-3 text-black my-col"
+                      onDragStart={(e) => this.onSelectedDragStart(e, orders)}
+                      onDragEnd={(e) => (e.target.style.cursor = 'grab')}
+                      style={{
+                        width: '40%',
+                        float: 'left',
+                        backgroundColor: 'darkblue',
+                        color: '#ffffff',
+                        textAlign: 'center',
+                        marginRight: '0.5rem',
+                        borderRadius: '5px',
+                        border: '1px solid #4e3e3e',
+                        borderStyle: 'dashed',
+                      }}
+                    >
+                      {' '}
+                      {_.filter(orders, { selected: true }).length > 0
+                        ? `Drag the selected ${
+                            _.filter(orders, { selected: true }).length
+                          } orders`
+                        : 'Select multiple orders'}
+                    </div>
+                  )}
+                  {_.filter(orders, { selected: true }).length > 0 &&
+                    !this.state.filter && (
+                      <div
+                        className="card py-2 text-black my-col"
+                        onClick={(e) => this.clearSelectedOrders(e)}
+                        style={{
+                          width: '30%',
+                          backgroundColor: 'darkgrey',
+                          color: '#ffffff',
+                          textAlign: 'center',
+                          borderRadius: '5px',
+                          border: '1px solid #4e3e3e',
+                          borderStyle: 'dashed',
+                        }}
+                      >
+                        {' '}
+                        Clear
+                      </div>
+                    )}
+                </span>
+                <span
+                  style={{
+                    cursor: 'grab',
                   }}
                   className={`${
                     this.state.filter && this.filter_orders(orders).length > 0
@@ -217,8 +320,10 @@ class dashboard extends Component {
                     draggable="true"
                     className="card py-2 text-black my-col"
                     onDragStart={(e) => this.onFilteredDragStart(e, orders)}
+                    onDragEnd={(e) => (e.target.style.cursor = 'grab')}
                     style={{
-                      backgroundColor: 'darkseagreen',
+                      width: '40%',
+                      backgroundColor: '#05e67e',
                       textAlign: 'center',
                       borderRadius: '5px',
                       border: '1px solid #4e3e3e',
@@ -230,7 +335,7 @@ class dashboard extends Component {
                   </div>
                 </span>
               </div>
-              <div className="col-6">
+              <div className="col-3">
                 <div className="align-right">
                   <div>
                     Orders pending allocation : <b>{orders.length}</b>
@@ -257,17 +362,21 @@ class dashboard extends Component {
                         .includes(this.state.filter.toUpperCase()) ||
                       !this.state.filter
                   )
-                  .map((order) => {
+                  .map((order, index) => {
                     return (
                       <div
                         draggable="true"
+                        style={{ cursor: 'grab' }}
                         onDragStart={(e) => this.onDragStart(e, order.orderId)}
+                        onDragEnd={(e) => (e.target.style.cursor = 'grab')}
                         className="col-xs-3 col-sm-3 col-md-3 "
-                        key={order.orderId}
+                        key={order.orderId + '' + index}
                       >
                         <div
                           className={`card card-block text-white border py-3 px-5 my-col`}
-                          style={{ backgroundColor: `${order.styleColour}` }}
+                          style={{
+                            backgroundColor: `${order.styleColour}`,
+                          }}
                         >
                           <h6 className="font-weight-400">
                             {' '}
@@ -333,6 +442,7 @@ class dashboard extends Component {
                             data-toggle="modal"
                             data-target="#selectedMonth"
                             onDragOver={(e) => this.onDragOver(e)}
+                            onDragLeave={(e) => this.onDragLeave(e)}
                             onDrop={(e) => {
                               this.onDrop(e, factory.id, allocation.month)
                             }}
@@ -345,7 +455,12 @@ class dashboard extends Component {
                                 )}`,
                               }}
                               onClick={(e) => {
-                                this.onClick(e, factory.id, allocation)
+                                this.onClick(
+                                  e,
+                                  factory.id,
+                                  factory.shortName,
+                                  allocation
+                                )
                               }}
                             ></div>
                           </div>
@@ -367,157 +482,25 @@ class dashboard extends Component {
               <span>@ 2021 Planning Board</span>
             </div>
           </footer>
-          <div
-            className="modal fade "
-            id="selectedMonth"
-            tabIndex="-1"
-            role="dialog"
-            aria-labelledby="exampleModalLabel"
-            aria-hidden="true"
+          <AllocationDetail
+            selected_allocation={this.state.selected_allocation}
+            selected_factory_id={this.state.selected_factory_id}
+            selected_factory_name={this.state.selected_factory_name}
+            is_over_utilisation={this.is_over_utilisation.bind(this)}
+            onUnallocate={this.onUnallocate}
+          />
+          <OrderSelection
+            orders={orders}
+            filter={this.state.filter}
+            setFilter={this.setFilter}
+            selectOrUnselectOrder={this.selectOrUnselectOrder.bind(this)}
+            selectOrUnselectAllOrders={this.selectOrUnselectAllOrders.bind(
+              this
+            )}
+            isAllOrderSelected={this.isAllOrderSelected}
           >
-            <div
-              className="modal-dialog modal-dialog-centered modal-fullscreen-xl-down modal-xl"
-              role="document"
-            >
-              <div className="modal-content">
-                <div className="modal-header">
-                  <div className="col-12">
-                    <div className="col-6">
-                      <h5 className="modal-title" id="exampleModalLabel">
-                        Planning Board
-                      </h5>
-                    </div>
-                    <div className="col-6"></div>
-                  </div>
-                </div>
-                <div className="modal-body row">
-                  <p>
-                    <span>Factory: {this.state.selected_factory}</span>
-                    <span style={{ marginLeft: '25px' }}>
-                      Month:{' '}
-                      {this.state.selected_allocation &&
-                        this.state.selected_allocation.month}
-                    </span>
-                    <span style={{ marginLeft: '25px' }}>
-                      Approved SAM:{' '}
-                      {this.state.selected_allocation &&
-                        this.state.selected_allocation.machineMins}
-                    </span>
-                    <span style={{ marginLeft: '25px' }}>
-                      Allocated SAM:{' '}
-                      {this.state.selected_allocation.orders &&
-                        _.sumBy(this.state.selected_allocation.orders, 'sam')}
-                    </span>
-                  </p>
-
-                  {this.state.selected_allocation.orders &&
-                    this.state.selected_allocation.orders.map(
-                      (order, index) => {
-                        return (
-                          <div
-                            draggable="true"
-                            onDragStart={(e) =>
-                              this.onDragStart(e, order.orderId)
-                            }
-                            className="col-xs-3 col-sm-3 col-md-3"
-                            key={order.orderId}
-                          >
-                            <div
-                              className={`text-white border py-1 px-3 my-col height  `}
-                              style={{
-                                backgroundColor: `${order.styleColour}`,
-                                height: '120px',
-                                position: 'relative',
-                              }}
-                            >
-                              <h6 className="font-weight-400">
-                                <span
-                                  style={{
-                                    position: 'absolute',
-                                    right: '6px',
-                                    top: '10px',
-                                    cursor: 'pointer',
-                                  }}
-                                  className=""
-                                  onClick={(e) => {
-                                    this.onUnallocate(
-                                      e,
-                                      this.state.selected_factory,
-                                      this.state.selected_allocation.month,
-                                      order.orderId
-                                    )
-                                  }}
-                                >
-                                  <FontAwesomeIcon
-                                    className="close"
-                                    color="black"
-                                    icon={faTrashAlt}
-                                  />
-                                </span>
-                              </h6>
-                              <h6 className="font-weight-400">
-                                <span
-                                  style={{
-                                    position: 'absolute',
-                                    right: '6px',
-                                    bottom: '10px',
-                                  }}
-                                  className=""
-                                >
-                                  <FontAwesomeIcon
-                                    className={`close ${
-                                      this.is_over_utilisation(index)
-                                        ? 'd-block'
-                                        : 'd-none'
-                                    }`}
-                                    color="red"
-                                    icon={faBalanceScaleRight}
-                                  />
-                                </span>
-                              </h6>
-                              <h6 className="font-weight-400">
-                                {' '}
-                                <span className="order_label">ID</span> :{' '}
-                                <span className="order_label">
-                                  {order.orderNo}
-                                </span>
-                              </h6>
-                              <h6 className="font-weight-400">
-                                <span className="order_label ">Style</span> :{' '}
-                                <span className="order_label style_des">
-                                  {order.styleDescription}
-                                </span>
-                              </h6>
-                              <h6 className="font-weight-400">
-                                <span className="order_label">Quantity</span> :{' '}
-                                <span className="order_label">
-                                  {order.orderedQty
-                                    ? order.orderedQty
-                                    : order.qty}
-                                </span>
-                              </h6>
-                              <h6 className="font-weight-400">
-                                <span className="order_label">SAM</span> :{' '}
-                                <span className="order_label">{order.sam}</span>
-                              </h6>
-                            </div>
-                          </div>
-                        )
-                      }
-                    )}
-                </div>
-                <div className="modal-footer">
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    data-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+            {this.props.children}
+          </OrderSelection>
         </div>
       </>
     )

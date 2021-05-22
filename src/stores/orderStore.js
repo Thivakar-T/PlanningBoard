@@ -13,15 +13,34 @@ export class OrderStore {
       pullOrders: action,
       allocateOrder: action,
       unallocateOrder: action,
+      selectOrUnselectOrder: action,
+      selectOrUnselectAllOrders: action,
     })
   }
 
-  orderSAM(orders: []) {
+  orderSAM(orders: any) {
+    orders = _.uniq(orders)
     orders.map((order: any) => {
       order.sam = order.orderedQty * order.styleSam
       return order
     })
     return orders
+  }
+  selectOrUnselectOrder({ isSelected, orderId }) {
+    this.orders = _.map(this.orders, (order) => {
+      if (order.orderId === orderId) {
+        order.selected = isSelected
+      }
+      return order
+    })
+    console.log(toJS(this.orders))
+  }
+  selectOrUnselectAllOrders({ isSelected }) {
+    this.orders = _.map(this.orders, (order) => {
+      order.selected = isSelected
+      return order
+    })
+    console.log(toJS(this.orders))
   }
 
   allocateOrder({ factoryId, orderIds, month }) {
