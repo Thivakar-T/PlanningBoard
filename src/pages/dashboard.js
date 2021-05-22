@@ -8,10 +8,7 @@ import PropagateLoader from 'react-spinners/PropagateLoader'
 import { css } from '@emotion/core'
 import AllocationDetail from './components/AllocationDetail'
 import OrderSelection from './components/OrderSelection'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faFilter } from '@fortawesome/free-solid-svg-icons'
-import { toJS } from 'mobx'
-import DragImg from './DragImage.png'
+import logo from './logo.png'
 
 const override = css`
   display: block;
@@ -212,7 +209,14 @@ class dashboard extends Component {
         <div className="container">
           <div className="py-3 mr-1 row">
             <div className="col-6">
-              <h3>Planning Board</h3>
+              <h3>
+                <img
+                  alt="Smart planner"
+                  style={{ width: '40px', marginRight: '10px' }}
+                  src={logo}
+                />
+                Smart planner
+              </h3>
             </div>
             <div className="col-4"></div>
             <div className="col-2" style={{ textAlign: 'right' }}>
@@ -233,7 +237,7 @@ class dashboard extends Component {
           <br />
           <div className="main">
             <div className="row">
-              <div className="col-3">
+              {/* <div className="col-3">
                 <div
                   className="form-group has-search"
                   style={{ width: '95%', marginBottom: '5px' }}
@@ -249,7 +253,7 @@ class dashboard extends Component {
                     onChange={(event) => this.setFilter(event.target.value)}
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="col-6">
                 <span
                   style={{
@@ -306,7 +310,7 @@ class dashboard extends Component {
                       </div>
                     )}
                 </span>
-                <span
+                {/* <span
                   style={{
                     cursor: 'grab',
                   }}
@@ -333,9 +337,9 @@ class dashboard extends Component {
                     {' '}
                     Drag all {this.filter_orders(orders).length} filtered orders
                   </div>
-                </span>
+                </span> */}
               </div>
-              <div className="col-3">
+              <div className="col-6">
                 <div className="align-right">
                   <div>
                     Orders pending allocation : <b>{orders.length}</b>
@@ -345,7 +349,7 @@ class dashboard extends Component {
             </div>
           </div>
           <br />
-          <div className="row" style={{ overflow: 'scroll' }}>
+          {/* <div className="row" style={{ overflow: 'scroll' }}>
             <div className="row flex-row flex-nowrap">
               {!loading_styles &&
                 orders.length > 0 &&
@@ -404,10 +408,10 @@ class dashboard extends Component {
                     )
                   })}
             </div>
-          </div>
-
-          <div className="row py-2 mx-2 text-center">
-            <div className="col-2 pt-2 pb-2 border">Factory</div>
+          </div> */}
+          {/* py-2 */}
+          <div className="row mx-2 text-center">
+            <div className="col-2 pt-1 pb-1 border">Factory</div>
             <div className="col-10">
               <div className="row ">
                 {this.state.months.map((item) => {
@@ -423,12 +427,18 @@ class dashboard extends Component {
           <div className="factory_container">
             {factories.map((factory) => {
               return (
-                <div
-                  className="row py-2 mx-2 text-center"
-                  key={`${factory.id}`}
-                >
-                  <div className="col-2 border pt-2 pb-2 ">
-                    {factory.shortName}
+                // py-2
+                <div className="row mx-2 text-center" key={`${factory.id}`}>
+                  <div
+                    className="col-2 border pt-1 pb-1 "
+                    title={factory.shortName}
+                  >
+                    <span
+                      style={{ fontSize: '12px', cursor: 'pointer' }}
+                      className="style_des"
+                    >
+                      {factory.shortName}
+                    </span>
                   </div>
                   <div className="col-10 ">
                     <div className="row ">
@@ -472,14 +482,14 @@ class dashboard extends Component {
               )
             })}
           </div>
-
+          <br />
           <footer className="footer " style={{ position: 'relative' }}>
             <div className="text-center hrfooter">
               <hr className="mx-5 " />
             </div>
             <div>
               <span>Copyright </span>
-              <span>@ 2021 Planning Board</span>
+              <span>@ 2021 Smart Planner</span>
             </div>
           </footer>
           <AllocationDetail

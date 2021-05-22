@@ -5,6 +5,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import _ from 'lodash'
 import React from 'react'
+import logo from '../logo.png'
 
 const OrderSelection = (props) => (
   <div
@@ -22,6 +23,11 @@ const OrderSelection = (props) => (
             <div className="row">
               <div className="col-11">
                 <h5 className="modal-title" id="exampleModalLabel">
+                  <img
+                    alt="Smart planner"
+                    style={{ width: '40px', marginRight: '10px' }}
+                    src={logo}
+                  />
                   Order Selection
                 </h5>
               </div>

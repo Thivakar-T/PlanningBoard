@@ -2,7 +2,7 @@
 .order_label{
   font-size: 0.8em;
 }
-.order_label.style_des{
+.style_des{
   width: 160px;
   overflow: hidden;
   position: relative;
@@ -17,6 +17,6 @@
   cursor:grab;
 }
 .factory_container{
-  height: 330px;
+  height: 60vh;
   overflow: scroll;
 }
