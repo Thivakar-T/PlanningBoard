@@ -86,12 +86,19 @@ const OrderSelection = (props) => (
                     />
                   </th>
                   <th scope="col">Orde No#</th>
-                  <th scope="col">Customer</th>
-                  <th scope="col">Style</th>
-                  <th scope="col">Quantity</th>
-                  <th scope="col">SAM</th>
+                  <th scope="col">PO No#</th>
+                  <th scope="col">Buyer Name</th>
                   <th scope="col">Season</th>
+                  <th scope="col">Prod Unit</th>
+                  <th scope="col">Style Number</th>
+                  <th scope="col">Embellishment</th>
+                  <th scope="col">SDESC</th>
+                  <th scope="col">Combo</th>
+                  <th scope="col">Ord Qty</th>
+                  <th scope="col">Prd Qty</th>
+                  <th scope="col">SAM</th>
                   <th scope="col">Country</th>
+                  <th scope="col">Ship Dt</th>
                 </tr>
               </thead>
               <tbody>
@@ -122,12 +129,19 @@ const OrderSelection = (props) => (
                             />
                           </td>
                           <td>{order.orderNo}</td>
+                          <td>{order.PONo}</td>
                           <td>{order.customerName}</td>
-                          <td>{order.styleDescription}</td>
-                          <td>{order.orderedQty}</td>
-                          <td>{order.orderSam}</td>
                           <td>{order.season}</td>
+                          <td>{order.prodUnit}</td>
+                          <td>{order.styleName}</td>
+                          <td>{order.embellishment}</td>
+                          <td>{order.sdesc}</td>
+                          <td>{order.combo}</td>
+                          <td>{order.orderedQty}</td>
+                          <td>{order.productionQty}</td>
+                          <td>{order.orderSam}</td>
                           <td>{order.country}</td>
+                          <td>{order.deliveryDate}</td>
                         </tr>
                       )
                     })}

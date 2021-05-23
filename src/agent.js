@@ -62,7 +62,7 @@ const Auth = {
 }
 
 const Order = {
-  pullOrder: () => requests.get('/order/get'),
+  pullOrder: () => requests.get('/order/get?key='),
   allocateOrder: (order) => requests.post('/order/production/allocates', order),
   unallocateOrder: (order) =>
     requests.post('/order/production/deallocate', { ...order }),

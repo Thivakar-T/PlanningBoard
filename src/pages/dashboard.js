@@ -122,10 +122,8 @@ class dashboard extends Component {
     })
   }
   onUnallocate = (ev, factoryId, month, orderId) => {
-    const {
-      order,
-      selected_allocation,
-    } = this.props.factoryStore.unallocateOrder({ factoryId, orderId, month })
+    const { order, selected_allocation } =
+      this.props.factoryStore.unallocateOrder({ factoryId, orderId, month })
     this.props.orderStore.unallocateOrder({ factoryId, orderId, month, order })
     this.setState({
       selected_allocation,
@@ -410,21 +408,21 @@ class dashboard extends Component {
             </div>
           </div> */}
           {/* py-2 */}
-          <div className="row mx-2 text-center">
-            <div className="col-2 pt-1 pb-1 border">Factory</div>
-            <div className="col-10">
-              <div className="row ">
-                {this.state.months.map((item) => {
-                  return (
-                    <div key={item.month} className="col-1 pt-2 pb-2 border">
-                      {item.month}
-                    </div>
-                  )
-                })}
+          <div className="factory_container">
+            <div className="row mx-2 text-center">
+              <div className="col-2 pt-1 pb-1 border">Factory</div>
+              <div className="col-10">
+                <div className="row ">
+                  {this.state.months.map((item) => {
+                    return (
+                      <div key={item.month} className="col-1 pt-2 pb-2 border">
+                        {item.month}
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="factory_container">
             {factories.map((factory) => {
               return (
                 // py-2
