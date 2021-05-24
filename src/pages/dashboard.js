@@ -262,6 +262,7 @@ class dashboard extends Component {
                 >
                   {!this.state.filter && (
                     <div
+                      id="load_orders_btn"
                       draggable="true"
                       data-toggle="modal"
                       data-target="#orderSelection"
@@ -285,7 +286,7 @@ class dashboard extends Component {
                         ? `Drag the selected ${
                             _.filter(orders, { selected: true }).length
                           } orders`
-                        : 'Select multiple orders'}
+                        : 'Load orders'}
                     </div>
                   )}
                   {_.filter(orders, { selected: true }).length > 0 &&

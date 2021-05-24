@@ -72,14 +72,13 @@ const AllocationDetail = (props) => (
               </span>
             </div>
             <br />
-            <table className="table table-striped table-hover">
+            <table className="table table-striped table-hover table-fixed">
               <thead>
                 <tr>
-                  <th scope="col">Orde No#</th>
-                  <th scope="col">PO No#</th>
+                  <th scope="col">PO Number - IONO#</th>
                   <th scope="col">Buyer Name</th>
                   <th scope="col">Season</th>
-                  <th scope="col">Prod Unit</th>
+                  {/* <th scope="col">Prod Unit</th> */}
                   <th scope="col">Style Number</th>
                   <th scope="col">Embellishment</th>
                   <th scope="col">SDESC</th>
@@ -88,7 +87,9 @@ const AllocationDetail = (props) => (
                   <th scope="col">Prd Qty</th>
                   <th scope="col">SAM</th>
                   <th scope="col">Country</th>
-                  <th scope="col">Ship Dt</th>
+                  <th scope="col" style={{ width: '90px' }}>
+                    Ship Dt
+                  </th>
                   <th scope="col">Action</th>
                 </tr>
               </thead>
@@ -111,17 +112,18 @@ const AllocationDetail = (props) => (
                           />
                         </td>
 
-                        <td>{order.orderNo}</td>
                         <td>{order.customerName}</td>
                         <td>{order.season}</td>
-                        <td>{order.prodUnit}</td>
+                        {/* <td>{order.prodUnit}</td> */}
                         <td>{order.styleName}</td>
                         <td>{order.embellishment}</td>
-                        <td>{order.sdesc}</td>
+                        <td>{order.styleDescription}</td>
                         <td>{order.combo}</td>
-                        <td>{order.orderedQty}</td>
+                        <td>
+                          {order.orderedQty ? order.orderedQty : order.qty}
+                        </td>
                         <td>{order.productionQty}</td>
-                        <td>{order.orderSam}</td>
+                        <td>{order.orderSam ? order.orderSam : order.sam}</td>
                         <td>{order.country}</td>
                         <td>{order.deliveryDate}</td>
                         <td>
